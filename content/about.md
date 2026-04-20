@@ -7,7 +7,7 @@ draft = false
 
 ## Hello! 
 
-Welcome to Lens' personal website! I'm passionate about technology and want to learn new things forever.
+Welcome to Lens's personal website! I'm passionate about technology and want to learn new things forever.
 
 ### About Me
 
