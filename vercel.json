@@ -3,5 +3,7 @@
     "env": {
       "HUGO_VERSION": "0.126.0"
     }
-  }
+  },
+  "buildCommand": "hugo --gc --minify",
+  "outputDirectory": "public"
 }
