@@ -1,4 +1,4 @@
-baseURL = "http://www.example.com"
+baseURL = "https://lens-website-theta.vercel.app/"
 title = "johndoe"
 theme = "hugo-coder"
 languageCode = "en"
