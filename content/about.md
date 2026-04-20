@@ -1,25 +1,29 @@
 +++
-title = "About"
-description = "Hugo, the world's fastest framework for building websites"
-date = "2019-02-28"
-aliases = ["about-us", "about-hugo", "contact"]
-author = "Hugo Authors"
+title = "About Me"
+description = "Learn more about me"
+date = "2024-01-01"
+draft = false
 +++
 
-Written in Go, Hugo is an open source static site generator available under the [Apache Licence 2.0.](https://github.com/gohugoio/hugo/blob/master/LICENSE) Hugo supports TOML, YAML and JSON data file types, Markdown and HTML content files and uses shortcodes to add rich content. Other notable features are taxonomies, multilingual mode, image processing, custom output formats, HTML/CSS/JS minification and support for Sass SCSS workflows.
+## Hello! 👋
 
-Hugo makes use of a variety of open source projects including:
+Welcome to my personal website! I'm passionate about technology and love building things for the web.
 
-* https://github.com/yuin/goldmark
-* https://github.com/alecthomas/chroma
-* https://github.com/muesli/smartcrop
-* https://github.com/spf13/cobra
-* https://github.com/spf13/viper
+### About Me
 
-Hugo is ideal for blogs, corporate websites, creative portfolios, online magazines, single page applications or even a website with thousands of pages.
+- 🚀 Currently working on: [Your Current Project/Role]
+- 💻 Tech Stack: [Your Technologies, e.g., JavaScript, Python, React, etc.]
+- 📚 Learning: [What you're currently learning]
+- 🎯 Interests: [Your interests related to your field]
 
-Hugo is for people who want to hand code their own website without worrying about setting up complicated runtimes, dependencies and databases.
+### Background
 
-Websites built with Hugo are extremely fast, secure and can be deployed anywhere including, AWS, GitHub Pages, Heroku, Netlify and any other hosting provider.
+I have a background in [Your Field/Education] and enjoy solving complex problems through code. When I'm not coding, you can find me [Your Hobbies].
 
-Learn more and contribute on [GitHub](https://github.com/gohugoio).
+### Get in Touch
+
+Feel free to reach out if you'd like to collaborate on a project or just want to chat about technology!
+
+---
+
+You can find me on [GitHub](https://github.com/yourusername) or [LinkedIn](https://linkedin.com/in/yourusername).
