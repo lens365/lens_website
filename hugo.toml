@@ -1,5 +1,5 @@
 baseURL = "https://lens-website-theta.vercel.app/"
-title = "My Personal Website"
+title = "Your Name - Personal Website"
 theme = "hugo-coder"
 languageCode = "en"
 defaultContentLanguage = "en"
@@ -17,51 +17,30 @@ noClasses = false
 unsafe = true
 
 [params]
-author = "Your Name"
-description = "My personal website and blog"
+# ===== 主要个人信息 =====
+author = "lens lei "                    # 改成你的名字（英文）
+description = "Welcome to my personal website"  # 网站描述
 keywords = "blog,developer,personal"
-info = ["Your Profession", "Your Interests"]
-avatarURL = "images/avatar.jpg"
-dateFormat = "January 2, 2006"
-since = 2024
-colorScheme = "auto"
+info = ["自动化", "大二","tongji"]  # 首页显示的职业信息
+avatarURL = "images/avatar.jpg"           # 头像图片路径
+since = 2026                             # 网站开始年份
+colorScheme = "dark"                      # 颜色主题：auto/light/dark
 hideColorSchemeToggle = false
-maxSeeAlsoItems = 5
-customCSS = []
-customSCSS = []
-customJS = []
 
-[taxonomies]
-category = "categories"
-series = "series"
-tag = "tags"
-
+# ===== 社交链接 =====
 [[params.social]]
 name = "Github"
 icon = "fa-brands fa-github fa-2x"
 weight = 1
-url = "https://github.com/yourusername/"
-
-[[params.social]]
-name = "LinkedIn"
-icon = "fa-brands fa-linkedin fa-2x"
-weight = 2
-url = "https://www.linkedin.com/in/yourusername/"
+url = "https://github.com/lens365"  # 改成你的 GitHub
 
 [[params.social]]
 name = "Email"
 icon = "fa-solid fa-envelope fa-2x"
-weight = 3
-url = "mailto:your.email@example.com"
+weight = 2
+url = "lensarism365@gmail.com"     # 改成你的邮箱
 
-[[params.social]]
-name = "RSS"
-icon = "fa-solid fa-rss fa-2x"
-weight = 4
-url = "index.xml"
-rel = "alternate"
-type = "application/rss+xml"
-
+# ===== 英文菜单 =====
 [languages.en]
 languageName = "English"
 weight = 1
@@ -86,16 +65,17 @@ name = "Contact"
 weight = 4
 url = "contact/"
 
+# ===== 中文配置 =====
 [languages.zh-cn]
 languageName = "中文"
 weight = 2
-title = "我的个人网站"
+title = "你的名字 - 个人网站"
 
 [languages.zh-cn.params]
 author = "你的名字"
-description = "我的个人网站和博客"
+description = "欢迎来到我的个人网站"
 keywords = "博客，开发者，个人"
-info = ["你的职业", "你的兴趣"]
+info = ["你的职业", "你的技能"]
 
 [[languages.zh-cn.menu.main]]
 name = "关于"
