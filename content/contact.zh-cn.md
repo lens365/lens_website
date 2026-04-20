@@ -1,7 +1,7 @@
 +++
 title = "联系"
 slug = "contact"
-date = "2024-01-01"
+date = "2026-04-20"
 draft = false
 +++
 
@@ -11,10 +11,9 @@ draft = false
 
 ### 联系方式
 
-- 📧 邮箱：[your.email@example.com](mailto:your.email@example.com)
-- 💼 LinkedIn: [linkedin.com/in/yourusername](https://linkedin.com/in/yourusername)
-- 🐙 GitHub: [github.com/yourusername](https://github.com/yourusername)
-- 📍 所在地：[你的城市，国家]
+- 邮箱：[lensarism365@gmail.com](mailto:lensarism365@gmail.com)
+- GitHub: [github.com/lens365](https://github.com/lens365)
+- 所在地：上海，中国
 
 ### 发送消息
 

@@ -1,5 +1,5 @@
 baseURL = "https://lens-website-theta.vercel.app/"
-title = "Your Name - Personal Website"
+title = "Lens -- Website"
 theme = "hugo-coder"
 languageCode = "en"
 defaultContentLanguage = "en"
@@ -21,10 +21,10 @@ unsafe = true
 author = "lens lei "                    # 改成你的名字（英文）
 description = "Welcome to my personal website"  # 网站描述
 keywords = "blog,developer,personal"
-info = ["自动化", "大二","tongji"]  # 首页显示的职业信息
+info = ["  Tongji -- 自动化  " , "  大二  " ]  # 首页显示的职业信息
 avatarURL = "images/avatar.jpg"           # 头像图片路径
 since = 2026                             # 网站开始年份
-colorScheme = "dark"                      # 颜色主题：auto/light/dark
+colorScheme = "auto"                      # 颜色主题：auto/light/dark
 hideColorSchemeToggle = false
 
 # ===== 社交链接 =====
@@ -35,10 +35,10 @@ weight = 1
 url = "https://github.com/lens365"  # 改成你的 GitHub
 
 [[params.social]]
-name = "Email"
+name = "Email:lensarism365@gmail.com"
 icon = "fa-solid fa-envelope fa-2x"
 weight = 2
-url = "mailto:lensarism365@gmail.com"     # 改成你的邮箱
+url = "lensarism365@gmail.com"     # 改成你的邮箱
 
 # ===== 英文菜单 =====
 [languages.en]
@@ -69,13 +69,13 @@ url = "contact/"
 [languages.zh-cn]
 languageName = "中文"
 weight = 2
-title = "你的名字 - 个人网站"
+title = "Lens -- Website"
 
 [languages.zh-cn.params]
-author = "你的名字"
+author = "Lens"
 description = "欢迎来到我的个人网站"
-keywords = "博客，开发者，个人"
-info = ["你的职业", "你的技能"]
+keywords = "博客，开发者"
+info = ["大二自动化", "深度学习+多模态感知"]
 
 [[languages.zh-cn.menu.main]]
 name = "关于"

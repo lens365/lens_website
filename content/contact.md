@@ -1,7 +1,7 @@
 +++
 title = "Contact"
 slug = "contact"
-date = "2024-01-01"
+date = "2026-04-20"
 draft = false
 +++
 
@@ -11,10 +11,11 @@ I'm always open to discussing new projects, creative ideas, or opportunities to 
 
 ### Contact Information
 
-- 📧 Email: [your.email@example.com](mailto:your.email@example.com)
-- 💼 LinkedIn: [linkedin.com/in/yourusername](https://linkedin.com/in/yourusername)
-- 🐙 GitHub: [github.com/yourusername](https://github.com/yourusername)
-- 📍 Location: [Your City, Country]
+- Email: [lensarism365@gmail.com](mailto:lensarism365@gmail.com)
+- GitHub: [github.com/lens365](https://github.com/lens365)
+- Location: Shanghai, China
+
+---
 
 ### Send a Message
 

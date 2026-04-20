@@ -1,29 +1,28 @@
 +++
 title = "About Me"
 description = "Learn more about me"
-date = "2024-01-01"
+date = "2026-04-20"
 draft = false
 +++
 
-## Hello! 👋
+## Hello! 
 
-Welcome to my personal website! I'm passionate about technology and love building things for the web.
+Welcome to Lens' personal website! I'm passionate about technology and want to learn new things forever.
 
 ### About Me
 
-- 🚀 Currently working on: [Your Current Project/Role]
-- 💻 Tech Stack: [Your Technologies, e.g., JavaScript, Python, React, etc.]
-- 📚 Learning: [What you're currently learning]
-- 🎯 Interests: [Your interests related to your field]
+- Currently working on: AVS project
+- Tech Stack: Cpp, Python, deep learning,computer vision, etc.
+- Learning: deep learning,multimodal model
+- Interests: computer vision,deep learning,computer graphics,convex optimization
 
 ### Background
 
-I have a background in [Your Field/Education] and enjoy solving complex problems through code. When I'm not coding, you can find me [Your Hobbies].
-
-### Get in Touch
-
-Feel free to reach out if you'd like to collaborate on a project or just want to chat about technology!
+I am a second-year undergraduate majoring in Automation at Tongji University. I enjoy solving complex problems and am passionate about AI and computer vision research. I enjoy working all the time to learn new things.
+And I believe something wonderful is about to happen.
 
 ---
 
-You can find me on [GitHub](https://github.com/yourusername) or [LinkedIn](https://linkedin.com/in/yourusername).
+### Get in Touch
+
+You can find me on [GitHub](https://github.com/lens365) or [Gmail](lensarism365@gmail.com).
