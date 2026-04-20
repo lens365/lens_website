@@ -1,9 +1,9 @@
 {
   "build": {
     "env": {
-      "HUGO_VERSION": "0.126.0"
+      "HUGO_VERSION": "0.160.1"
     }
   },
-  "buildCommand": "hugo --gc --minify",
+  "buildCommand": "mkdir -p themes && ln -s . themes/hugo-coder && hugo --gc --minify",
   "outputDirectory": "public"
 }

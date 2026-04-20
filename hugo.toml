@@ -1,6 +1,6 @@
 baseURL = "https://lens-website-theta.vercel.app/"
 title = "johndoe"
-theme = "."
+theme = "hugo-coder"
 languageCode = "en"
 defaultContentLanguage = "en"
 enableEmoji = true
