@@ -1,5 +1,5 @@
 +++
-title = "ROS2 学习日志1.node（节点）"
+title = "ROS2 学习node（节点）"
 description = "ROS2 学习日志1.node（节点） - Lens Note"
 date = "2025-10-11"
 draft = false
