@@ -1,6 +1,26 @@
-.idea
-**/themes/
-exampleSite/public/
-exampleSite/resources/
-*.lock
-public
+# 排除 node_modules
+node_modules/
+
+# 排除 NPM 相关文件
+node.exe
+npm
+npm.cmd
+npm.ps1
+npx
+npx.cmd
+npx.ps1
+nodevars.bat
+corepack
+corepack.cmd
+install_tools.bat
+
+# 排除 VSCode 配置
+.vscode/
+
+# Hugo 构建输出
+public/
+resources/
+
+# 系统文件
+.DS_Store
+Thumbs.db
