@@ -1,3 +1,3 @@
-module github.com/luizdepra/hugo-coder
+module github.com/lens365/lens_website
 
 go 1.16
