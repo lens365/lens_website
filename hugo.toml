@@ -16,6 +16,14 @@ noClasses = false
 [markup.goldmark.renderer]
 unsafe = true
 
+[markup.goldmark.extensions]
+[markup.goldmark.extensions.passthrough]
+enable = true
+
+[markup.goldmark.extensions.passthrough.delimiters]
+block = [['\[', '\]'], ['$$', '$$']]
+inline = [['\(', '\)'], ['$', '$']]
+
 [params]
 # ===== 主要个人信息 =====
 author = "lens lei "                    # 改成你的名字（英文）
