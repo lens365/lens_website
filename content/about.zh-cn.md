@@ -3,7 +3,6 @@ title = "关于我"
 description = "了解更多关于我的信息"
 date = "2024-01-01"
 draft = false
-lang = "zh-cn"
 +++
 
 ## 你好！👋

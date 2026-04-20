@@ -3,7 +3,6 @@ title = "联系"
 slug = "contact"
 date = "2024-01-01"
 draft = false
-lang = "zh-cn"
 +++
 
 ## 联系我

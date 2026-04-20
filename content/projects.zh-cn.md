@@ -3,7 +3,6 @@ title = "项目"
 slug = "projects"
 date = "2024-01-01"
 draft = false
-lang = "zh-cn"
 +++
 
 这里是我参与过的一些项目：
