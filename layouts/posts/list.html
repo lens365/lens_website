@@ -9,6 +9,9 @@
           {{ title (i18n (lower .Title)) | default .Title }}
         </a>
       </h1>
+      <a href="/admin/" class="admin-link" title="Edit">
+        <i class="fa-solid fa-pen-to-square"></i> Edit
+      </a>
     </header>
     {{ .Content }}
     <ul>
