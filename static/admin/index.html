@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>post edit - Lens</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
   <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
@@ -312,14 +315,22 @@
     // 设置默认日期
     document.getElementById('date').valueAsDate = new Date();
 
-    // 图片粘贴上传功能
-    easyMDE.codemirror.on('paste', async function(cm, e) {
+    // 图片粘贴上传功能 - 使用更可靠的方式
+    document.addEventListener('paste', async function(e) {
+      // 检查是否在编辑器区域内
+      const activeElement = document.activeElement;
+      const isInEditor = activeElement && (
+        activeElement.classList.contains('CodeMirror-code') ||
+        activeElement.closest('.EasyMDEContainer') ||
+        activeElement.id === 'content'
+      );
+
+      if (!isInEditor) return;
+
       const items = e.clipboardData.items;
-      let hasImage = false;
 
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
-          hasImage = true;
           e.preventDefault();
 
           const blob = items[i].getAsFile();
@@ -335,6 +346,7 @@
           try {
             const imageUrl = await uploadImage(blob, token);
             if (imageUrl) {
+              // 在当前光标位置插入图片
               const cm = easyMDE.codemirror;
               const cursor = cm.getCursor();
               cm.replaceRange(`\n![image](${imageUrl})\n`, cursor);
