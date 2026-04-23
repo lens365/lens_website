@@ -1,0 +1,66 @@
+backend:
+  name: github
+  repo: lens365/lens_website
+  branch: main
+  base_url: https://lens-website-theta.vercel.app
+  auth_scope: repo
+
+# 使用 Decap CMS 的本地保存模式（无需 OAuth，直接提交到 GitHub）
+# 注意：需要先在 GitHub 创建 OAuth App 并配置环境变量
+
+media_folder: "static/images"
+public_folder: "/images"
+
+site_url: https://lens-website-theta.vercel.app
+logo_url: /images/avatar.png
+locale: zh_Hans
+
+i18n:
+  structure: multiple_files
+  locales: [en, zh-cn]
+  default_locale: zh-cn
+
+# 编辑器配置
+editor:
+  preview: true
+
+# 集合定义
+collections:
+  # 博客文章
+  - name: "posts"
+    label: "博客文章"
+    label_singular: "博客文章"
+    folder: "content/posts"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    i18n: true
+    path: "{{slug}}"
+    editor:
+      preview: false
+    fields:
+      - { label: "标题", name: "title", widget: "string", i18n: true }
+      - { label: "描述", name: "description", widget: "string", i18n: true, required: false }
+      - { label: "日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false, i18n: "duplicate" }
+      - { label: "草稿", name: "draft", widget: "boolean", default: false, i18n: "duplicate" }
+      - { label: "标签", name: "tags", widget: "list", i18n: true, required: false }
+      - { label: "分类", name: "categories", widget: "list", i18n: true, required: false }
+      - { label: "正文", name: "body", widget: "markdown", i18n: true }
+
+  # 页面
+  - name: "pages"
+    label: "页面"
+    label_singular: "页面"
+    folder: "content"
+    create: true
+    delete: true
+    i18n: true
+    editor:
+      preview: false
+    filter: { field: "title", pattern: "^(?!.*\.zh-cn).*" }
+    fields:
+      - { label: "标题", name: "title", widget: "string", i18n: true }
+      - { label: "Slug", name: "slug", widget: "string", i18n: "duplicate", required: false }
+      - { label: "日期", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false, i18n: "duplicate" }
+      - { label: "草稿", name: "draft", widget: "boolean", default: false, i18n: "duplicate" }
+      - { label: "正文", name: "body", widget: "markdown", i18n: true }
