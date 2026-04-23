@@ -3,10 +3,11 @@ backend:
   repo: lens365/lens_website
   branch: main
   base_url: https://lens-website-theta.vercel.app
+  auth_endpoint: /api/auth
   auth_scope: repo
 
-# 使用 Decap CMS 的本地保存模式（无需 OAuth，直接提交到 GitHub）
-# 注意：需要先在 GitHub 创建 OAuth App 并配置环境变量
+# GitHub OAuth App 已创建
+# 需要在 Vercel 环境变量中配置 OAUTH_CLIENT_ID 和 OAUTH_CLIENT_SECRET
 
 media_folder: "static/images"
 public_folder: "/images"
