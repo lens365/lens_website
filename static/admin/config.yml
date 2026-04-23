@@ -50,7 +50,7 @@ collections:
     i18n: true
     editor:
       preview: false
-    filter: { field: "title", pattern: "^(?!.*\.zh-cn).*" }
+    filter: { field: "title", pattern: '^(?!.*\.zh-cn).*' }
     fields:
       - { label: "标题", name: "title", widget: "string", i18n: true }
       - { label: "Slug", name: "slug", widget: "string", i18n: "duplicate", required: false }
