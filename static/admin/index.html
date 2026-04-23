@@ -176,15 +176,31 @@
     // 检查是否有 edit 参数
     const urlParams = new URLSearchParams(window.location.search);
     const editPath = urlParams.get('edit');
+    const tokenInput = document.getElementById('token');
 
     if (editPath) {
       document.querySelector('h1').textContent = '✏️ 编辑文章';
       document.getElementById('submit').textContent = '保存修改';
-      loadArticle(editPath);
+      // 先隐藏编辑区域，等 token 输入后再显示
+      document.querySelector('.section:last-child').style.display = 'none';
+      showStatus('请输入 GitHub Token 以加载文章', false);
     }
 
-    async function loadArticle(path) {
-      const token = document.getElementById('token').value.trim();
+    // 监听 token 输入，输入后自动加载（编辑模式）
+    tokenInput.addEventListener('change', async function() {
+      const token = this.value.trim();
+      if (!token) return;
+      
+      if (editPath) {
+        showStatus('正在加载文章...', false);
+        await loadArticle(editPath, token);
+      }
+    });
+
+    async function loadArticle(path, token) {
+      if (!token) {
+        token = document.getElementById('token').value.trim();
+      }
       if (!token) {
         showStatus('请先输入 GitHub Token', true);
         return;
@@ -220,7 +236,13 @@
             
             easyMDE.value(body);
             document.getElementById('filename').value = path.replace('content/posts/', '').replace('.md', '');
+            
+            // 显示编辑区域
+            document.querySelector('.section:last-child').style.display = 'block';
+            showStatus('文章已加载，可以开始编辑', false);
           }
+        } else {
+          showStatus('加载文章失败，请检查 Token 是否有权限', true);
         }
       } catch (err) {
         showStatus('加载文章失败: ' + err.message, true);
