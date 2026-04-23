@@ -312,6 +312,100 @@
     // 设置默认日期
     document.getElementById('date').valueAsDate = new Date();
 
+    // 图片粘贴上传功能
+    easyMDE.codemirror.on('paste', async function(cm, e) {
+      const items = e.clipboardData.items;
+      let hasImage = false;
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          hasImage = true;
+          e.preventDefault();
+
+          const blob = items[i].getAsFile();
+          const token = document.getElementById('token').value.trim();
+
+          if (!token) {
+            showStatus('请先输入 GitHub Token 才能上传图片', true);
+            return;
+          }
+
+          showStatus('正在上传图片...', false);
+
+          try {
+            const imageUrl = await uploadImage(blob, token);
+            if (imageUrl) {
+              const cm = easyMDE.codemirror;
+              const cursor = cm.getCursor();
+              cm.replaceRange(`\n![image](${imageUrl})\n`, cursor);
+              showStatus('图片上传成功', false);
+            }
+          } catch (err) {
+            showStatus('图片上传失败: ' + err.message, true);
+          }
+          break;
+        }
+      }
+    });
+
+    // 上传图片到 GitHub
+    async function uploadImage(file, token) {
+      const ext = file.name ? file.name.split('.').pop() : 'png';
+      const filename = `image-${Date.now()}.${ext}`;
+      const path = `static/images/${filename}`;
+
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = async function() {
+          const base64 = reader.result.split(',')[1];
+
+          try {
+            // 检查文件是否已存在
+            let sha = null;
+            try {
+              const checkRes = await fetch(`https://api.github.com/repos/lens365/lens_website/contents/${path}`, {
+                headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+              });
+              if (checkRes.status === 200) {
+                const data = await checkRes.json();
+                sha = data.sha;
+              }
+            } catch (e) {}
+
+            const body = {
+              message: `upload image: ${filename}`,
+              content: base64,
+              branch: 'main'
+            };
+            if (sha) body.sha = sha;
+
+            const res = await fetch(`https://api.github.com/repos/lens365/lens_website/contents/${path}`, {
+              method: 'PUT',
+              headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(body)
+            });
+
+            if (res.ok) {
+              const data = await res.json();
+              // 返回图片的 raw URL
+              resolve(data.content.download_url);
+            } else {
+              const err = await res.json();
+              reject(new Error(err.message || '上传失败'));
+            }
+          } catch (err) {
+            reject(err);
+          }
+        };
+        reader.onerror = () => reject(new Error('读取文件失败'));
+        reader.readAsDataURL(file);
+      });
+    }
+
     function showStatus(msg, isError) {
       const el = document.getElementById('status');
       el.textContent = msg;
