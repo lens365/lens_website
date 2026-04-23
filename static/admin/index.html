@@ -3,10 +3,186 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>博客管理后台</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <title>博客编辑器 - Lens</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #faf9f7;
+      color: #1f1f1f;
+      line-height: 1.6;
+    }
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    h1 { font-size: 1.8rem; margin-bottom: 20px; color: #1f1f1f; }
+    .section { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    label { display: block; font-weight: 600; margin-bottom: 5px; color: #555; }
+    input[type="text"], input[type="date"], textarea, select {
+      width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;
+      font-size: 14px; font-family: inherit; background: #fff;
+    }
+    textarea { min-height: 400px; resize: vertical; font-family: "SF Mono", Consolas, monospace; line-height: 1.5; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+    .row.single { grid-template-columns: 1fr; }
+    button {
+      background: #1f1f1f; color: #fff; border: none; padding: 12px 24px;
+      border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;
+    }
+    button:hover { background: #333; }
+    button:disabled { background: #999; cursor: not-allowed; }
+    .token-input { margin-bottom: 20px; }
+    .token-input input { font-family: monospace; }
+    .status {
+      padding: 10px; border-radius: 6px; margin-top: 15px; display: none;
+    }
+    .status.success { background: #d4edda; color: #155724; display: block; }
+    .status.error { background: #f8d7da; color: #721c24; display: block; }
+    .help { font-size: 12px; color: #888; margin-top: 4px; }
+    .preview { background: #f5f5f5; padding: 15px; border-radius: 6px; margin-top: 10px; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+    .tab { padding: 8px 16px; cursor: pointer; border-radius: 6px; background: #eee; }
+    .tab.active { background: #1f1f1f; color: #fff; }
+  </style>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <div class="container">
+    <h1>📝 博客编辑器</h1>
+
+    <div class="section token-input">
+      <label>GitHub Personal Access Token</label>
+      <input type="text" id="token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+      <p class="help">在 https://github.com/settings/tokens 生成，勾选 repo 权限</p>
+    </div>
+
+    <div class="section">
+      <div class="row">
+        <div>
+          <label>标题</label>
+          <input type="text" id="title" placeholder="文章标题">
+        </div>
+        <div>
+          <label>文件名（英文，不带后缀）</label>
+          <input type="text" id="filename" placeholder="my-post">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>日期</label>
+          <input type="date" id="date">
+        </div>
+        <div>
+          <label>分类（用逗号分隔）</label>
+          <input type="text" id="categories" placeholder="笔记, 技术">
+        </div>
+      </div>
+      <div class="row single">
+        <div>
+          <label>标签（用逗号分隔）</label>
+          <input type="text" id="tags" placeholder="hugo, blog">
+        </div>
+      </div>
+      <div class="row single">
+        <div>
+          <label>正文（Markdown 格式）</label>
+          <textarea id="content" placeholder="# 标题
+
+正文内容...
+
+- 列表项1
+- 列表项2
+
+```python
+print('hello')
+```"></textarea>
+        </div>
+      </div>
+      <button id="submit" onclick="publish()">发布文章</button>
+      <div id="status" class="status"></div>
+    </div>
+  </div>
+
+  <script>
+    // 设置默认日期为今天
+    document.getElementById('date').valueAsDate = new Date();
+
+    function showStatus(msg, isError) {
+      const el = document.getElementById('status');
+      el.textContent = msg;
+      el.className = 'status ' + (isError ? 'error' : 'success');
+    }
+
+    async function publish() {
+      const token = document.getElementById('token').value.trim();
+      const title = document.getElementById('title').value.trim();
+      let filename = document.getElementById('filename').value.trim();
+      const date = document.getElementById('date').value;
+      const categories = document.getElementById('categories').value.split(',').map(s => s.trim()).filter(s => s);
+      const tags = document.getElementById('tags').value.split(',').map(s => s.trim()).filter(s => s);
+      const content = document.getElementById('content').value;
+
+      if (!token) { showStatus('请输入 GitHub Token', true); return; }
+      if (!title) { showStatus('请输入标题', true); return; }
+      if (!filename) { filename = title.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, '-').replace(/^-|-$/g, ''); }
+      if (!date) { showStatus('请选择日期', true); return; }
+
+      const btn = document.getElementById('submit');
+      btn.disabled = true;
+      btn.textContent = '发布中...';
+
+      // 构建 front matter
+      let frontMatter = `+++\ntitle = "${title}"\ndescription = "${title} - Lens Note"\ndate = "${date}"\ndraft = false\n`;
+      if (tags.length) frontMatter += `tags = [${tags.map(t => `"${t}"`).join(', ')}]\n`;
+      if (categories.length) frontMatter += `categories = [${categories.map(c => `"${c}"`).join(', ')}]\n`;
+      frontMatter += `+++\n\n${content}`;
+
+      const path = `content/posts/${filename}.md`;
+      const encodedContent = btoa(unescape(encodeURIComponent(frontMatter)));
+
+      try {
+        // 检查文件是否已存在
+        let sha = null;
+        try {
+          const checkRes = await fetch(`https://api.github.com/repos/lens365/lens_website/contents/${path}`, {
+            headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+          });
+          if (checkRes.status === 200) {
+            const data = await checkRes.json();
+            sha = data.sha;
+          }
+        } catch (e) {}
+
+        const body = {
+          message: `post: add ${filename}`,
+          content: encodedContent,
+          branch: 'main'
+        };
+        if (sha) body.sha = sha;
+
+        const res = await fetch(`https://api.github.com/repos/lens365/lens_website/contents/${path}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${token}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+
+        if (res.ok) {
+          showStatus(`✅ 发布成功！文章将在 Vercel 自动部署后显示（约 1-2 分钟）`, false);
+          document.getElementById('title').value = '';
+          document.getElementById('filename').value = '';
+          document.getElementById('content').value = '';
+        } else {
+          const err = await res.json();
+          showStatus(`❌ 发布失败: ${err.message || res.statusText}`, true);
+        }
+      } catch (err) {
+        showStatus(`❌ 错误: ${err.message}`, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '发布文章';
+      }
+    }
+  </script>
 </body>
 </html>

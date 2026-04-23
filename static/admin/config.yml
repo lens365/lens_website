@@ -2,8 +2,8 @@ backend:
   name: github
   repo: lens365/lens_website
   branch: main
-  # 使用 GitHub Personal Access Token 方式
-  # 访问 /admin/ 时会让你输入 token
+  base_url: https://lens-website-theta.vercel.app
+  auth_endpoint: auth
 
 media_folder: "static/images"
 public_folder: "/images"
