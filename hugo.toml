@@ -44,10 +44,10 @@ weight = 1
 url = "https://github.com/lens365"  # 改成你的 GitHub
 
 [[params.social]]
-name = "Email:lensarism365@gmail.com"
+name = "Email"
 icon = "fa-solid fa-envelope fa-2x"
 weight = 2
-url = "lensarism365@gmail.com"     # 改成你的邮箱
+url = "mailto:lensarism365@gmail.com"     # 改成你的邮箱
 
 # ===== 英文菜单 =====
 [languages.en]
