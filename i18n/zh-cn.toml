@@ -62,3 +62,6 @@ other = "错误"
 
 [link_to_heading]
 other = "链接到标题"
+
+[entry_toc]
+other = "目录"
