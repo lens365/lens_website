@@ -9,6 +9,11 @@
         {{- i18n (lower .Title) | default .Title | title -}}
       </a>
     </h1>
+    {{ if eq .RelPermalink "/posts/" }}
+    <a href="/admin/" class="admin-link" title="写文章">
+      <i class="fa-solid fa-pen-to-square"></i> 写文章
+    </a>
+    {{ end }}
   </header>
   {{ .Content }}
   <ul>

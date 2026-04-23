@@ -29,6 +29,35 @@ code, pre {
     font-weight: 600;
 }
 
+/* 写文章按钮 */
+.admin-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #1f1f1f;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: background 0.2s ease;
+}
+
+.admin-link:hover {
+    background: #333;
+    color: #fff;
+}
+
+.list header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
 /* 平滑过渡 */
 body, .navigation, .footer, .content, article, section {
     transition: background-color 0.3s ease, color 0.3s ease;
