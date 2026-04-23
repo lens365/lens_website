@@ -2,24 +2,17 @@ backend:
   name: github
   repo: lens365/lens_website
   branch: main
-  base_url: https://lens-website-theta.vercel.app
-  auth_endpoint: auth
-
 media_folder: "static/images"
 public_folder: "/images"
-
 site_url: https://lens-website-theta.vercel.app
 logo_url: /images/avatar.png
 locale: zh_Hans
-
 i18n:
   structure: multiple_files
   locales: [en, zh-cn]
   default_locale: zh-cn
-
 editor:
   preview: true
-
 collections:
   - name: "posts"
     label: "博客文章"
@@ -40,7 +33,6 @@ collections:
       - { label: "标签", name: "tags", widget: "list", i18n: true, required: false }
       - { label: "分类", name: "categories", widget: "list", i18n: true, required: false }
       - { label: "正文", name: "body", widget: "markdown", i18n: true }
-
   - name: "pages"
     label: "页面"
     label_singular: "页面"
