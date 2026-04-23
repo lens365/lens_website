@@ -1,30 +1,35 @@
-/* 自定义中文字体 */
+/* Claude Style Overrides */
 
-/* 引入 Google Fonts 的思源黑体 */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
-
-/* 全局字体设置 */
+/* 全局字体 - Claude 使用现代系统字体栈 */
 body {
-    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* 标题字体 */
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif !important;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+/* 代码块字体 */
+code, pre {
+    font-family: "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace !important;
+}
+
+/* 导航栏和页脚 */
+.navigation, .footer {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif !important;
+}
+
+/* 文章标题链接 */
+.title-link {
     font-weight: 600;
 }
 
-/* 代码块中的中文 */
-code, pre {
-    font-family: 'Noto Sans SC', 'Fira Code', 'Consolas', 'Monaco', 'Andale Mono', monospace !important;
-}
-
-/* 导航栏 */
-.navigation {
-    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
-}
-
-/* 页脚 */
-.footer {
-    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+/* 平滑过渡 */
+body, .navigation, .footer, .content, article, section {
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
