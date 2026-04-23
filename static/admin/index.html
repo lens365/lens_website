@@ -279,6 +279,15 @@
   </div>
 
   <script>
+    // 检查是否是新建文章模式
+    const urlParams = new URLSearchParams(window.location.search);
+    const editPath = urlParams.get('edit');
+
+    // 新建文章模式下，先清除 EasyMDE 的 autosave 缓存（必须在初始化前）
+    if (!editPath) {
+      localStorage.removeItem('smde_lens-blog-editor');
+    }
+
     // 初始化 EasyMDE
     const easyMDE = new EasyMDE({
       element: document.getElementById('content'),
@@ -309,9 +318,6 @@
       el.className = 'status ' + (isError ? 'error' : 'success');
     }
 
-    // 检查是否有 edit 参数
-    const urlParams = new URLSearchParams(window.location.search);
-    const editPath = urlParams.get('edit');
     const tokenInput = document.getElementById('token');
 
     if (editPath) {
@@ -321,7 +327,7 @@
       document.querySelector('.section:last-child').style.display = 'none';
       showStatus('请输入 GitHub Token 以加载文章', false);
     } else {
-      // 新建文章模式：清空所有表单和 localStorage
+      // 新建文章模式：清空所有表单
       clearForm();
     }
 
@@ -333,8 +339,6 @@
       document.getElementById('categories').value = '';
       document.getElementById('tags').value = '';
       easyMDE.value('');
-      // 清除 EasyMDE 的 autosave 缓存
-      localStorage.removeItem('smde_lens-blog-editor');
     }
 
     // 监听 token 输入，输入后自动加载（编辑模式）
