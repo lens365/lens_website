@@ -2,12 +2,8 @@ backend:
   name: github
   repo: lens365/lens_website
   branch: main
-  base_url: https://lens-website-theta.vercel.app
-  auth_endpoint: /api/auth
-  auth_scope: repo
-
-# GitHub OAuth App 已创建
-# 需要在 Vercel 环境变量中配置 OAUTH_CLIENT_ID 和 OAUTH_CLIENT_SECRET
+  # 使用 GitHub Personal Access Token 方式
+  # 访问 /admin/ 时会让你输入 token
 
 media_folder: "static/images"
 public_folder: "/images"
@@ -21,13 +17,10 @@ i18n:
   locales: [en, zh-cn]
   default_locale: zh-cn
 
-# 编辑器配置
 editor:
   preview: true
 
-# 集合定义
 collections:
-  # 博客文章
   - name: "posts"
     label: "博客文章"
     label_singular: "博客文章"
@@ -48,7 +41,6 @@ collections:
       - { label: "分类", name: "categories", widget: "list", i18n: true, required: false }
       - { label: "正文", name: "body", widget: "markdown", i18n: true }
 
-  # 页面
   - name: "pages"
     label: "页面"
     label_singular: "页面"
