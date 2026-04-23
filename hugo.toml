@@ -84,7 +84,7 @@ title = "Lens -- Website"
 author = "Lens"
 description = "欢迎来到我的个人网站"
 keywords = "博客，开发者"
-info = ["大二自动化", "深度学习+多模态感知"]
+info = [" Tongji -- 自动化", "大二"]
 
 [[languages.zh-cn.menu.main]]
 name = "关于"
