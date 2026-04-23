@@ -1,102 +1,238 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>博客编辑器 - Lens</title>
+  <title>post edit - Lens</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
   <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background: #0d0d0d;
       color: #e8e6e1;
       line-height: 1.6;
     }
-    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-    h1 { font-size: 1.5rem; margin-bottom: 20px; color: #e8e6e1; }
-    .section { background: #1a1a1a; border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid #333; }
-    label { display: block; font-weight: 600; margin-bottom: 5px; color: #aaa; }
-    input[type="text"], input[type="date"] {
-      width: 100%; padding: 10px; border: 1px solid #333; border-radius: 6px;
-      font-size: 14px; font-family: inherit; background: #262626; color: #e8e6e1;
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
     }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-    .row.single { grid-template-columns: 1fr; }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #e8e6e1;
+    }
+
+    .section {
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid #333;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #aaa;
+    }
+
+    input[type="text"],
+    input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #262626;
+      color: #e8e6e1;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .row.single {
+      grid-template-columns: 1fr;
+    }
+
     button {
-      background: #e8e6e1; color: #0d0d0d; border: none; padding: 12px 24px;
-      border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;
+      background: #e8e6e1;
+      color: #0d0d0d;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
     }
-    button:hover { background: #d4d2cc; }
-    button:disabled { background: #444; color: #888; cursor: not-allowed; }
-    .token-input { margin-bottom: 20px; }
-    .help { font-size: 12px; color: #666; margin-top: 4px; }
+
+    button:hover {
+      background: #d4d2cc;
+    }
+
+    button:disabled {
+      background: #444;
+      color: #888;
+      cursor: not-allowed;
+    }
+
+    .token-input {
+      margin-bottom: 20px;
+    }
+
+    .help {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+
     .status {
-      padding: 12px; border-radius: 6px; margin-top: 15px; display: none;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 15px;
+      display: none;
     }
-    .status.success { background: #1a3a1a; color: #7cb342; display: block; border: 1px solid #2e5c2e; }
-    .status.error { background: #3a1a1a; color: #e57373; display: block; border: 1px solid #5c2e2e; }
-    
+
+    .status.success {
+      background: #1a3a1a;
+      color: #7cb342;
+      display: block;
+      border: 1px solid #2e5c2e;
+    }
+
+    .status.error {
+      background: #3a1a1a;
+      color: #e57373;
+      display: block;
+      border: 1px solid #5c2e2e;
+    }
+
     /* EasyMDE Dark Theme Override */
     .EasyMDEContainer {
       border: 1px solid #333 !important;
       border-radius: 6px !important;
       overflow: hidden;
     }
+
     .EasyMDEContainer .CodeMirror {
       background: #262626 !important;
       color: #e8e6e1 !important;
       border: none !important;
     }
-    .EasyMDEContainer .CodeMirror-cursor { border-color: #e8e6e1 !important; }
+
+    .EasyMDEContainer .CodeMirror-cursor {
+      border-color: #e8e6e1 !important;
+    }
+
     .EasyMDEContainer .editor-toolbar {
       background: #1a1a1a !important;
       border-bottom: 1px solid #333 !important;
     }
+
     .EasyMDEContainer .editor-toolbar button {
       color: #aaa !important;
       background: transparent !important;
       border: none !important;
     }
+
     .EasyMDEContainer .editor-toolbar button:hover {
       background: #333 !important;
       color: #e8e6e1 !important;
     }
-    .EasyMDEContainer .editor-toolbar i { color: inherit !important; }
+
+    .EasyMDEContainer .editor-toolbar i {
+      color: inherit !important;
+    }
+
     .editor-preview {
       background: #1a1a1a !important;
       color: #e8e6e1 !important;
     }
-    .editor-preview h1, .editor-preview h2, .editor-preview h3,
-    .editor-preview h4, .editor-preview h5, .editor-preview h6 {
+
+    .editor-preview h1,
+    .editor-preview h2,
+    .editor-preview h3,
+    .editor-preview h4,
+    .editor-preview h5,
+    .editor-preview h6 {
       color: #e8e6e1 !important;
     }
+
     .editor-preview pre {
       background: #262626 !important;
       border: 1px solid #333 !important;
     }
+
     .editor-preview code {
       background: #262626 !important;
       color: #d4a574 !important;
     }
+
     .editor-preview blockquote {
       border-left: 3px solid #8b5e3c !important;
       background: #1a1a1a !important;
     }
-    .cm-header { color: #d4a574 !important; font-weight: 600 !important; }
-    .cm-strong { font-weight: 700 !important; color: #fff !important; }
-    .cm-em { font-style: italic !important; color: #aaa !important; }
-    .cm-link { color: #8b5e3c !important; }
-    .cm-url { color: #d4a574 !important; }
-    .cm-quote { color: #888 !important; font-style: italic !important; }
-    .cm-code { background: #333 !important; color: #d4a574 !important; border-radius: 3px; padding: 0 3px; }
-    .cm-comment { color: #666 !important; }
+
+    .cm-header {
+      color: #d4a574 !important;
+      font-weight: 600 !important;
+    }
+
+    .cm-strong {
+      font-weight: 700 !important;
+      color: #fff !important;
+    }
+
+    .cm-em {
+      font-style: italic !important;
+      color: #aaa !important;
+    }
+
+    .cm-link {
+      color: #8b5e3c !important;
+    }
+
+    .cm-url {
+      color: #d4a574 !important;
+    }
+
+    .cm-quote {
+      color: #888 !important;
+      font-style: italic !important;
+    }
+
+    .cm-code {
+      background: #333 !important;
+      color: #d4a574 !important;
+      border-radius: 3px;
+      padding: 0 3px;
+    }
+
+    .cm-comment {
+      color: #666 !important;
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
-    <h1>📝 博客编辑器</h1>
+    <h1>Post Edit</h1>
 
     <div class="section token-input">
       <label>GitHub Personal Access Token</label>
@@ -179,18 +315,33 @@
     const tokenInput = document.getElementById('token');
 
     if (editPath) {
-      document.querySelector('h1').textContent = '✏️ 编辑文章';
-      document.getElementById('submit').textContent = '保存修改';
+      document.querySelector('h1').textContent = 'Edit Post';
+      document.getElementById('submit').textContent = 'Save Changes';
       // 先隐藏编辑区域，等 token 输入后再显示
       document.querySelector('.section:last-child').style.display = 'none';
       showStatus('请输入 GitHub Token 以加载文章', false);
+    } else {
+      // 新建文章模式：清空所有表单和 localStorage
+      clearForm();
+    }
+
+    // 清空表单函数
+    function clearForm() {
+      document.getElementById('title').value = '';
+      document.getElementById('filename').value = '';
+      document.getElementById('date').valueAsDate = new Date();
+      document.getElementById('categories').value = '';
+      document.getElementById('tags').value = '';
+      easyMDE.value('');
+      // 清除 EasyMDE 的 autosave 缓存
+      localStorage.removeItem('smde_lens-blog-editor');
     }
 
     // 监听 token 输入，输入后自动加载（编辑模式）
-    tokenInput.addEventListener('change', async function() {
+    tokenInput.addEventListener('change', async function () {
       const token = this.value.trim();
       if (!token) return;
-      
+
       if (editPath) {
         showStatus('正在加载文章...', false);
         await loadArticle(editPath, token);
@@ -213,18 +364,18 @@
         if (res.ok) {
           const data = await res.json();
           const content = decodeURIComponent(escape(atob(data.content)));
-          
+
           // 解析 front matter
           const match = content.match(/^\+\+\+([\s\S]*?)\+\+\+([\s\S]*)$/);
           if (match) {
             const frontMatter = match[1];
             const body = match[2].trim();
-            
+
             const titleMatch = frontMatter.match(/title\s*=\s*"([^"]+)"/);
             const dateMatch = frontMatter.match(/date\s*=\s*"([^"]+)"/);
             const tagsMatch = frontMatter.match(/tags\s*=\s*\[(.*?)\]/);
             const catsMatch = frontMatter.match(/categories\s*=\s*\[(.*?)\]/);
-            
+
             if (titleMatch) document.getElementById('title').value = titleMatch[1];
             if (dateMatch) document.getElementById('date').value = dateMatch[1];
             if (tagsMatch) {
@@ -233,10 +384,10 @@
             if (catsMatch) {
               document.getElementById('categories').value = catsMatch[1].split(',').map(s => s.trim().replace(/"/g, '')).join(', ');
             }
-            
+
             easyMDE.value(body);
             document.getElementById('filename').value = path.replace('content/posts/', '').replace('.md', '');
-            
+
             // 显示编辑区域
             document.querySelector('.section:last-child').style.display = 'block';
             showStatus('文章已加载，可以开始编辑', false);
@@ -286,7 +437,7 @@
             const data = await checkRes.json();
             sha = data.sha;
           }
-        } catch (e) {}
+        } catch (e) { }
 
         const body = {
           message: editPath ? `post: update ${filename}` : `post: add ${filename}`,
@@ -306,18 +457,16 @@
         });
 
         if (res.ok) {
-          showStatus(`✅ ${editPath ? '修改成功' : '发布成功'}！文章将在 Vercel 自动部署后显示（约 1-2 分钟）`, false);
+          showStatus(`${editPath ? '修改成功' : '发布成功'}！文章将自动部署后显示`, false);
           if (!editPath) {
-            document.getElementById('title').value = '';
-            document.getElementById('filename').value = '';
-            easyMDE.value('');
+            clearForm();
           }
         } else {
           const err = await res.json();
-          showStatus(`❌ 失败: ${err.message || res.statusText}`, true);
+          showStatus(`失败: ${err.message || res.statusText}`, true);
         }
       } catch (err) {
-        showStatus(`❌ 错误: ${err.message}`, true);
+        showStatus(`错误: ${err.message}`, true);
       } finally {
         btn.disabled = false;
         btn.textContent = originalText;
@@ -325,4 +474,5 @@
     }
   </script>
 </body>
+
 </html>
