@@ -36,11 +36,11 @@ categories = ["前端"]
 
 ```javascript
 const res = await fetch(
-  `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+  `https://api.github.com/repos/${owner}/${repo}/contents/{path}`,
   {
     method: 'PUT',
     headers: {
-      'Authorization': `token ${token}`,
+      'Authorization': `token {token}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -51,13 +51,13 @@ const res = await fetch(
   }
 );
 let frontMatter = `+++
-title = "${title}"
-date = "${date}"
+title = "{title}"
+date = "{date}"
 draft = false
 `;
 
 if (tags.length) {
-  frontMatter += `tags = [${tags.map(t => `"${t}"`).join(', ')}]\n`;
+  frontMatter += `tags = [{tags.map(t => `"{t}"`).join(', ')}]\n`;
 }
 
-frontMatter += `+++\n\n${content}`;
+frontMatter += `+++\n\n{content}`;
