@@ -4,43 +4,94 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>博客编辑器 - Lens</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background: #faf9f7;
-      color: #1f1f1f;
+      background: #0d0d0d;
+      color: #e8e6e1;
       line-height: 1.6;
     }
-    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-    h1 { font-size: 1.8rem; margin-bottom: 20px; color: #1f1f1f; }
-    .section { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    label { display: block; font-weight: 600; margin-bottom: 5px; color: #555; }
-    input[type="text"], input[type="date"], textarea, select {
-      width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;
-      font-size: 14px; font-family: inherit; background: #fff;
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    h1 { font-size: 1.5rem; margin-bottom: 20px; color: #e8e6e1; }
+    .section { background: #1a1a1a; border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid #333; }
+    label { display: block; font-weight: 600; margin-bottom: 5px; color: #aaa; }
+    input[type="text"], input[type="date"] {
+      width: 100%; padding: 10px; border: 1px solid #333; border-radius: 6px;
+      font-size: 14px; font-family: inherit; background: #262626; color: #e8e6e1;
     }
-    textarea { min-height: 400px; resize: vertical; font-family: "SF Mono", Consolas, monospace; line-height: 1.5; }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
     .row.single { grid-template-columns: 1fr; }
     button {
-      background: #1f1f1f; color: #fff; border: none; padding: 12px 24px;
+      background: #e8e6e1; color: #0d0d0d; border: none; padding: 12px 24px;
       border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;
     }
-    button:hover { background: #333; }
-    button:disabled { background: #999; cursor: not-allowed; }
+    button:hover { background: #d4d2cc; }
+    button:disabled { background: #444; color: #888; cursor: not-allowed; }
     .token-input { margin-bottom: 20px; }
-    .token-input input { font-family: monospace; }
+    .help { font-size: 12px; color: #666; margin-top: 4px; }
     .status {
-      padding: 10px; border-radius: 6px; margin-top: 15px; display: none;
+      padding: 12px; border-radius: 6px; margin-top: 15px; display: none;
     }
-    .status.success { background: #d4edda; color: #155724; display: block; }
-    .status.error { background: #f8d7da; color: #721c24; display: block; }
-    .help { font-size: 12px; color: #888; margin-top: 4px; }
-    .preview { background: #f5f5f5; padding: 15px; border-radius: 6px; margin-top: 10px; }
-    .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-    .tab { padding: 8px 16px; cursor: pointer; border-radius: 6px; background: #eee; }
-    .tab.active { background: #1f1f1f; color: #fff; }
+    .status.success { background: #1a3a1a; color: #7cb342; display: block; border: 1px solid #2e5c2e; }
+    .status.error { background: #3a1a1a; color: #e57373; display: block; border: 1px solid #5c2e2e; }
+    
+    /* EasyMDE Dark Theme Override */
+    .EasyMDEContainer {
+      border: 1px solid #333 !important;
+      border-radius: 6px !important;
+      overflow: hidden;
+    }
+    .EasyMDEContainer .CodeMirror {
+      background: #262626 !important;
+      color: #e8e6e1 !important;
+      border: none !important;
+    }
+    .EasyMDEContainer .CodeMirror-cursor { border-color: #e8e6e1 !important; }
+    .EasyMDEContainer .editor-toolbar {
+      background: #1a1a1a !important;
+      border-bottom: 1px solid #333 !important;
+    }
+    .EasyMDEContainer .editor-toolbar button {
+      color: #aaa !important;
+      background: transparent !important;
+      border: none !important;
+    }
+    .EasyMDEContainer .editor-toolbar button:hover {
+      background: #333 !important;
+      color: #e8e6e1 !important;
+    }
+    .EasyMDEContainer .editor-toolbar i { color: inherit !important; }
+    .editor-preview {
+      background: #1a1a1a !important;
+      color: #e8e6e1 !important;
+    }
+    .editor-preview h1, .editor-preview h2, .editor-preview h3,
+    .editor-preview h4, .editor-preview h5, .editor-preview h6 {
+      color: #e8e6e1 !important;
+    }
+    .editor-preview pre {
+      background: #262626 !important;
+      border: 1px solid #333 !important;
+    }
+    .editor-preview code {
+      background: #262626 !important;
+      color: #d4a574 !important;
+    }
+    .editor-preview blockquote {
+      border-left: 3px solid #8b5e3c !important;
+      background: #1a1a1a !important;
+    }
+    .cm-header { color: #d4a574 !important; font-weight: 600 !important; }
+    .cm-strong { font-weight: 700 !important; color: #fff !important; }
+    .cm-em { font-style: italic !important; color: #aaa !important; }
+    .cm-link { color: #8b5e3c !important; }
+    .cm-url { color: #d4a574 !important; }
+    .cm-quote { color: #888 !important; font-style: italic !important; }
+    .cm-code { background: #333 !important; color: #d4a574 !important; border-radius: 3px; padding: 0 3px; }
+    .cm-comment { color: #666 !important; }
   </style>
 </head>
 <body>
@@ -60,7 +111,7 @@
           <input type="text" id="title" placeholder="文章标题">
         </div>
         <div>
-          <label>文件名（英文，不带后缀）</label>
+          <label>文件名（可留空，自动生成）</label>
           <input type="text" id="filename" placeholder="my-post">
         </div>
       </div>
@@ -82,17 +133,8 @@
       </div>
       <div class="row single">
         <div>
-          <label>正文（Markdown 格式）</label>
-          <textarea id="content" placeholder="# 标题
-
-正文内容...
-
-- 列表项1
-- 列表项2
-
-```python
-print('hello')
-```"></textarea>
+          <label>正文（支持 Markdown 实时预览）</label>
+          <textarea id="content"></textarea>
         </div>
       </div>
       <button id="submit" onclick="publish()">发布文章</button>
@@ -101,13 +143,88 @@ print('hello')
   </div>
 
   <script>
-    // 设置默认日期为今天
+    // 初始化 EasyMDE
+    const easyMDE = new EasyMDE({
+      element: document.getElementById('content'),
+      spellChecker: false,
+      autosave: {
+        enabled: true,
+        delay: 5000,
+        uniqueId: 'lens-blog-editor'
+      },
+      toolbar: [
+        'bold', 'italic', 'heading', '|',
+        'quote', 'unordered-list', 'ordered-list', '|',
+        'link', 'image', 'code', '|',
+        'preview', 'side-by-side', 'fullscreen', '|',
+        'guide'
+      ],
+      status: false,
+      minHeight: '300px',
+      placeholder: '# 在这里写你的文章...\n\n支持 Markdown 语法，右侧可以预览效果'
+    });
+
+    // 设置默认日期
     document.getElementById('date').valueAsDate = new Date();
 
     function showStatus(msg, isError) {
       const el = document.getElementById('status');
       el.textContent = msg;
       el.className = 'status ' + (isError ? 'error' : 'success');
+    }
+
+    // 检查是否有 edit 参数
+    const urlParams = new URLSearchParams(window.location.search);
+    const editPath = urlParams.get('edit');
+
+    if (editPath) {
+      document.querySelector('h1').textContent = '✏️ 编辑文章';
+      document.getElementById('submit').textContent = '保存修改';
+      loadArticle(editPath);
+    }
+
+    async function loadArticle(path) {
+      const token = document.getElementById('token').value.trim();
+      if (!token) {
+        showStatus('请先输入 GitHub Token', true);
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://api.github.com/repos/lens365/lens_website/contents/${path}`, {
+          headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const content = decodeURIComponent(escape(atob(data.content)));
+          
+          // 解析 front matter
+          const match = content.match(/^\+\+\+([\s\S]*?)\+\+\+([\s\S]*)$/);
+          if (match) {
+            const frontMatter = match[1];
+            const body = match[2].trim();
+            
+            const titleMatch = frontMatter.match(/title\s*=\s*"([^"]+)"/);
+            const dateMatch = frontMatter.match(/date\s*=\s*"([^"]+)"/);
+            const tagsMatch = frontMatter.match(/tags\s*=\s*\[(.*?)\]/);
+            const catsMatch = frontMatter.match(/categories\s*=\s*\[(.*?)\]/);
+            
+            if (titleMatch) document.getElementById('title').value = titleMatch[1];
+            if (dateMatch) document.getElementById('date').value = dateMatch[1];
+            if (tagsMatch) {
+              document.getElementById('tags').value = tagsMatch[1].split(',').map(s => s.trim().replace(/"/g, '')).join(', ');
+            }
+            if (catsMatch) {
+              document.getElementById('categories').value = catsMatch[1].split(',').map(s => s.trim().replace(/"/g, '')).join(', ');
+            }
+            
+            easyMDE.value(body);
+            document.getElementById('filename').value = path.replace('content/posts/', '').replace('.md', '');
+          }
+        }
+      } catch (err) {
+        showStatus('加载文章失败: ' + err.message, true);
+      }
     }
 
     async function publish() {
@@ -117,7 +234,7 @@ print('hello')
       const date = document.getElementById('date').value;
       const categories = document.getElementById('categories').value.split(',').map(s => s.trim()).filter(s => s);
       const tags = document.getElementById('tags').value.split(',').map(s => s.trim()).filter(s => s);
-      const content = document.getElementById('content').value;
+      const content = easyMDE.value();
 
       if (!token) { showStatus('请输入 GitHub Token', true); return; }
       if (!title) { showStatus('请输入标题', true); return; }
@@ -126,19 +243,18 @@ print('hello')
 
       const btn = document.getElementById('submit');
       btn.disabled = true;
-      btn.textContent = '发布中...';
+      const originalText = btn.textContent;
+      btn.textContent = editPath ? '保存中...' : '发布中...';
 
-      // 构建 front matter
       let frontMatter = `+++\ntitle = "${title}"\ndescription = "${title} - Lens Note"\ndate = "${date}"\ndraft = false\n`;
       if (tags.length) frontMatter += `tags = [${tags.map(t => `"${t}"`).join(', ')}]\n`;
       if (categories.length) frontMatter += `categories = [${categories.map(c => `"${c}"`).join(', ')}]\n`;
       frontMatter += `+++\n\n${content}`;
 
-      const path = `content/posts/${filename}.md`;
+      const path = editPath || `content/posts/${filename}.md`;
       const encodedContent = btoa(unescape(encodeURIComponent(frontMatter)));
 
       try {
-        // 检查文件是否已存在
         let sha = null;
         try {
           const checkRes = await fetch(`https://api.github.com/repos/lens365/lens_website/contents/${path}`, {
@@ -151,7 +267,7 @@ print('hello')
         } catch (e) {}
 
         const body = {
-          message: `post: add ${filename}`,
+          message: editPath ? `post: update ${filename}` : `post: add ${filename}`,
           content: encodedContent,
           branch: 'main'
         };
@@ -168,19 +284,21 @@ print('hello')
         });
 
         if (res.ok) {
-          showStatus(`✅ 发布成功！文章将在 Vercel 自动部署后显示（约 1-2 分钟）`, false);
-          document.getElementById('title').value = '';
-          document.getElementById('filename').value = '';
-          document.getElementById('content').value = '';
+          showStatus(`✅ ${editPath ? '修改成功' : '发布成功'}！文章将在 Vercel 自动部署后显示（约 1-2 分钟）`, false);
+          if (!editPath) {
+            document.getElementById('title').value = '';
+            document.getElementById('filename').value = '';
+            easyMDE.value('');
+          }
         } else {
           const err = await res.json();
-          showStatus(`❌ 发布失败: ${err.message || res.statusText}`, true);
+          showStatus(`❌ 失败: ${err.message || res.statusText}`, true);
         }
       } catch (err) {
         showStatus(`❌ 错误: ${err.message}`, true);
       } finally {
         btn.disabled = false;
-        btn.textContent = '发布文章';
+        btn.textContent = originalText;
       }
     }
   </script>

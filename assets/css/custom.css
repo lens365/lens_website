@@ -58,6 +58,31 @@ code, pre {
     gap: 10px;
 }
 
+/* 每篇博客旁的编辑按钮 */
+.post-edit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-left: 8px;
+    color: #888;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    opacity: 0;
+}
+
+li:hover .post-edit {
+    opacity: 1;
+}
+
+.post-edit:hover {
+    color: #1f1f1f;
+    background: #f0efe9;
+}
+
 /* 平滑过渡 */
 body, .navigation, .footer, .content, article, section {
     transition: background-color 0.3s ease, color 0.3s ease;
