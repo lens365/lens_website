@@ -8,7 +8,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="color-scheme" content="light dark">
-  <title>post edit - Lens</title>
+  <title>Post Edit - Lens</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
   <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
   <style>
@@ -336,55 +336,55 @@
   <div class="container">
     <div class="page-header">
       <h1>Post Edit</h1>
-      <a href="/" class="back-link">← Return</a>
+      <a href="/" class="back-link">&larr; Return</a>
     </div>
 
     <div class="section token-input">
       <label>GitHub Personal Access Token</label>
       <input type="text" id="token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-      <p class="help">在 https://github.com/settings/tokens 生成，勾选 repo 权限</p>
+      <p class="help">Generate at https://github.com/settings/tokens, check repo scope</p>
     </div>
 
     <div class="section">
       <div class="row">
         <div>
-          <label>标题</label>
-          <input type="text" id="title" placeholder="文章标题">
+          <label>Title</label>
+          <input type="text" id="title" placeholder="Article Title">
         </div>
         <div>
-          <label>文件名（可留空，自动生成）</label>
+          <label>Filename (auto-generated if empty)</label>
           <input type="text" id="filename" placeholder="my-post">
         </div>
       </div>
       <div class="row">
         <div>
-          <label>日期</label>
+          <label>Date</label>
           <input type="date" id="date">
         </div>
         <div>
-          <label>分类（用逗号分隔）</label>
-          <input type="text" id="categories" placeholder="笔记, 技术">
+          <label>Categories (comma separated)</label>
+          <input type="text" id="categories" placeholder="notes, tech">
         </div>
       </div>
       <div class="row single">
         <div>
-          <label>标签（用逗号分隔）</label>
+          <label>Tags (comma separated)</label>
           <input type="text" id="tags" placeholder="hugo, blog">
         </div>
       </div>
       <div class="row single">
         <div>
-          <label>正文（支持 Markdown 实时预览）</label>
+          <label>Content (Markdown supported)</label>
           <textarea id="content"></textarea>
         </div>
       </div>
-      <button id="submit" onclick="publish()">发布文章</button>
+      <button id="submit" onclick="publish()">Publish</button>
       <div id="status" class="status"></div>
     </div>
   </div>
 
   <script>
-    // 主题管理：自动跟随网站主题（localStorage）或系统偏好
+    // Theme: auto-follow website theme (localStorage) or system preference
     (function initTheme() {
       const saved = localStorage.getItem('colorscheme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -393,16 +393,16 @@
       document.documentElement.style.colorScheme = theme;
     })();
 
-    // 检查是否是新建文章模式
+    // Check if in edit mode
     const urlParams = new URLSearchParams(window.location.search);
     const editPath = urlParams.get('edit');
 
-    // 新建文章模式下，先清除 EasyMDE 的 autosave 缓存（必须在初始化前）
+    // Clear EasyMDE autosave cache on new post
     if (!editPath) {
       localStorage.removeItem('smde_lens-blog-editor');
     }
 
-    // 初始化 EasyMDE
+    // Init EasyMDE
     const easyMDE = new EasyMDE({
       element: document.getElementById('content'),
       spellChecker: false,
@@ -421,16 +421,16 @@
       ],
       status: false,
       minHeight: '300px',
-      placeholder: '# 在这里写你的文章...\n\n支持 Markdown 语法，右侧可以预览效果'
+      placeholder: '# Write your article here...\n\nMarkdown syntax supported, preview on the right'
     });
 
-    // 设置默认日期
+    // Set default date
     document.getElementById('date').valueAsDate = new Date();
 
-    // 存储待上传的 blob 图片: blobUrl -> Blob
+    // Store pending blob images: blobUrl -> Blob
     const pendingImages = new Map();
 
-    // 图片粘贴功能：生成 blob URL 预览，发布时统一上传
+    // Paste images as blob URL for preview, upload on publish
     document.addEventListener('paste', function(e) {
       const activeElement = document.activeElement;
       const isInEditor = activeElement && (
@@ -451,13 +451,13 @@
           const cm = easyMDE.codemirror;
           const cursor = cm.getCursor();
           cm.replaceRange(`\n![image](${blobUrl})\n`, cursor);
-          showStatus('图片已插入编辑器（blob 预览，发布时自动上传）', false);
+          showStatus('Image inserted (blob preview, auto-upload on publish)', false);
           break;
         }
       }
     });
 
-    // 上传 blob 图片到 GitHub
+    // Upload blob image to GitHub
     async function uploadBlobImage(blob, token) {
       const ext = blob.type === 'image/jpeg' ? 'jpg' : (blob.type.split('/')[1] || 'png');
       const filename = `image-${Date.now()}-${Math.random().toString(36).substr(2, 6)}.${ext}`;
@@ -502,18 +502,18 @@
               resolve(data.content.download_url);
             } else {
               const err = await res.json();
-              reject(new Error(err.message || '上传失败'));
+              reject(new Error(err.message || 'Upload failed'));
             }
           } catch (err) {
             reject(err);
           }
         };
-        reader.onerror = () => reject(new Error('读取文件失败'));
+        reader.onerror = () => reject(new Error('Failed to read file'));
         reader.readAsDataURL(blob);
       });
     }
 
-    // 发布前扫描 blob URL 图片并上传
+    // Scan and upload blob images before publish
     async function processBlobImages(content, token) {
       const regex = /!\[([^\]]*)\]\((blob:[^)]+)\)/gi;
       let result = content;
@@ -527,13 +527,13 @@
 
         if (blob) {
           try {
-            showStatus('正在上传文章中的图片...', false);
+            showStatus('Uploading images...', false);
             const url = await uploadBlobImage(blob, token);
             result = result.replace(fullMatch, `![${altText}](${url})`);
             URL.revokeObjectURL(blobUrl);
             pendingImages.delete(blobUrl);
           } catch (err) {
-            console.error('上传图片失败:', err);
+            console.error('Upload image failed:', err);
           }
         }
       }
@@ -552,15 +552,12 @@
     if (editPath) {
       document.querySelector('.page-header h1').textContent = 'Edit Post';
       document.getElementById('submit').textContent = 'Save Changes';
-      // 先隐藏编辑区域，等 token 输入后再显示
       document.querySelector('.section:last-child').style.display = 'none';
-      showStatus('请输入 GitHub Token 以加载文章', false);
+      showStatus('Please enter GitHub Token to load article', false);
     } else {
-      // 新建文章模式：清空所有表单
       clearForm();
     }
 
-    // 清空表单函数
     function clearForm() {
       document.getElementById('title').value = '';
       document.getElementById('filename').value = '';
@@ -570,13 +567,12 @@
       easyMDE.value('');
     }
 
-    // 监听 token 输入，输入后自动加载（编辑模式）
     tokenInput.addEventListener('change', async function () {
       const token = this.value.trim();
       if (!token) return;
 
       if (editPath) {
-        showStatus('正在加载文章...', false);
+        showStatus('Loading article...', false);
         await loadArticle(editPath, token);
       }
     });
@@ -586,7 +582,7 @@
         token = document.getElementById('token').value.trim();
       }
       if (!token) {
-        showStatus('请先输入 GitHub Token', true);
+        showStatus('Please enter GitHub Token first', true);
         return;
       }
 
@@ -598,7 +594,6 @@
           const data = await res.json();
           const content = decodeURIComponent(escape(atob(data.content)));
 
-          // 解析 front matter
           const match = content.match(/^\+\+\+([\s\S]*?)\+\+\+([\s\S]*)$/);
           if (match) {
             const frontMatter = match[1];
@@ -621,15 +616,14 @@
             easyMDE.value(body);
             document.getElementById('filename').value = path.replace('content/posts/', '').replace('.md', '');
 
-            // 显示编辑区域
             document.querySelector('.section:last-child').style.display = 'block';
-            showStatus('文章已加载，可以开始编辑', false);
+            showStatus('Article loaded, you can start editing', false);
           }
         } else {
-          showStatus('加载文章失败，请检查 Token 是否有权限', true);
+          showStatus('Failed to load article, please check Token permissions', true);
         }
       } catch (err) {
-        showStatus('加载文章失败: ' + err.message, true);
+        showStatus('Failed to load article: ' + err.message, true);
       }
     }
 
@@ -642,17 +636,16 @@
       const tags = document.getElementById('tags').value.split(',').map(s => s.trim()).filter(s => s);
       const content = easyMDE.value();
 
-      if (!token) { showStatus('请输入 GitHub Token', true); return; }
-      if (!title) { showStatus('请输入标题', true); return; }
+      if (!token) { showStatus('Please enter GitHub Token', true); return; }
+      if (!title) { showStatus('Please enter title', true); return; }
       if (!filename) { filename = title.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, '-').replace(/^-|-$/g, ''); }
-      if (!date) { showStatus('请选择日期', true); return; }
+      if (!date) { showStatus('Please select date', true); return; }
 
       const btn = document.getElementById('submit');
       btn.disabled = true;
       const originalText = btn.textContent;
-      btn.textContent = editPath ? '保存中...' : '发布中...';
+      btn.textContent = editPath ? 'Saving...' : 'Publishing...';
 
-      // 发布前，先把文章中的 blob 图片上传到 GitHub
       let processedContent = content;
       if (token) {
         processedContent = await processBlobImages(content, token);
@@ -696,16 +689,16 @@
         });
 
         if (res.ok) {
-          showStatus(`${editPath ? '修改成功' : '发布成功'}！文章将自动部署后显示`, false);
+          showStatus(`${editPath ? 'Update successful' : 'Publish successful'}! Article will be displayed after deployment`, false);
           if (!editPath) {
             clearForm();
           }
         } else {
           const err = await res.json();
-          showStatus(`失败: ${err.message || res.statusText}`, true);
+          showStatus(`Failed: ${err.message || res.statusText}`, true);
         }
       } catch (err) {
-        showStatus(`错误: ${err.message}`, true);
+        showStatus(`Error: ${err.message}`, true);
       } finally {
         btn.disabled = false;
         btn.textContent = originalText;
