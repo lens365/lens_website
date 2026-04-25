@@ -106,10 +106,11 @@
       const originalHtml = list.innerHTML;
 
       const allPosts = [
-        {{ range .Pages }}
+        {{ range .RegularPages }}
         {
           title: {{ .Title | jsonify }},
-          html: {{ .Render "search-li" | jsonify }},
+          permalink: {{ .RelPermalink | jsonify }},
+          date: {{ .Date | time.Format (.Site.Params.dateFormat | default "January 2, 2006") | jsonify }},
           content: {{ .Plain | jsonify }}
         },
         {{ end }}
@@ -118,7 +119,7 @@
       let fuse = null;
       if (typeof Fuse !== 'undefined' && allPosts.length > 0) {
         fuse = new Fuse(allPosts, {
-          keys: ['title', 'summary', 'content'],
+          keys: ['title', 'content'],
           threshold: 0.35,
           ignoreLocation: true,
           minMatchCharLength: 2
@@ -146,7 +147,11 @@
           notice.textContent = 'No posts found for "' + escapeHtml(query.trim()) + '"';
         } else {
           list.innerHTML = results.map(function(r) {
-            return r.item.html;
+            var p = r.item;
+            return '<li>' +
+              '<span class="date">' + escapeHtml(p.date) + '</span>' +
+              '<a class="title" href="' + p.permalink + '">' + escapeHtml(p.title) + '</a>' +
+              '</li>';
           }).join('');
           notice.style.display = 'none';
         }
