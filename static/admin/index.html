@@ -416,6 +416,13 @@
       document.documentElement.style.colorScheme = theme;
     })();
 
+    // Polyfill: EasyMDE uses hljs.highlightBlock() which was removed in hljs v11
+    if (window.hljs && !window.hljs.highlightBlock) {
+      window.hljs.highlightBlock = function(el) {
+        window.hljs.highlightElement(el);
+      };
+    }
+
     // Check if in edit mode
     const urlParams = new URLSearchParams(window.location.search);
     const editPath = urlParams.get('edit');
@@ -445,15 +452,8 @@
       status: false,
       minHeight: '300px',
       placeholder: '# Write your article here...\n\nMarkdown syntax supported, preview on the right',
-      previewRender: function(plainText, preview) {
-        const html = this.parent.markdown(plainText);
-        setTimeout(() => {
-          preview.innerHTML = html;
-          preview.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightElement(block);
-          });
-        }, 0);
-        return 'Loading...';
+      renderingConfig: {
+        codeSyntaxHighlighting: true
       }
     });
 
