@@ -17,11 +17,78 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg-body: #faf9f7;
+      --bg-card: #fff;
+      --bg-input: #fff;
+      --bg-code: #f8f9fa;
+      --fg-main: #1f1f1f;
+      --fg-label: #555;
+      --fg-help: #666;
+      --border-main: #e0e0e0;
+      --border-input: #ddd;
+      --border-code: #e0e0e0;
+      --btn-bg: #1f1f1f;
+      --btn-fg: #fff;
+      --btn-hover: #333;
+      --btn-disabled-bg: #ccc;
+      --btn-disabled-fg: #666;
+      --shadow: rgba(0,0,0,0.05);
+      --status-success-bg: #d4edda;
+      --status-success-fg: #155724;
+      --status-success-border: #c3e6cb;
+      --status-error-bg: #f8d7da;
+      --status-error-fg: #721c24;
+      --status-error-border: #f5c6cb;
+      --cm-bg: #fff;
+      --cm-fg: #1f1f1f;
+      --cm-cursor: #1f1f1f;
+      --cm-toolbar-bg: #faf9f7;
+      --cm-toolbar-btn: #555;
+      --cm-toolbar-btn-hover-bg: #e0e0e0;
+      --cm-toolbar-btn-hover-fg: #1f1f1f;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-body: #0d0d0d;
+        --bg-card: #1a1a1a;
+        --bg-input: #262626;
+        --bg-code: #262626;
+        --fg-main: #e8e6e1;
+        --fg-label: #d4d2cc;
+        --fg-help: #888;
+        --border-main: #333;
+        --border-input: #333;
+        --border-code: #333;
+        --btn-bg: #e8e6e1;
+        --btn-fg: #0d0d0d;
+        --btn-hover: #d4d2cc;
+        --btn-disabled-bg: #444;
+        --btn-disabled-fg: #888;
+        --shadow: rgba(0,0,0,0.2);
+        --status-success-bg: #1a3a1a;
+        --status-success-fg: #7cb342;
+        --status-success-border: #2e5c2e;
+        --status-error-bg: #3a1a1a;
+        --status-error-fg: #e57373;
+        --status-error-border: #5c2e2e;
+        --cm-bg: #262626;
+        --cm-fg: #e8e6e1;
+        --cm-cursor: #e8e6e1;
+        --cm-toolbar-bg: #1a1a1a;
+        --cm-toolbar-btn: #d4d2cc;
+        --cm-toolbar-btn-hover-bg: #333;
+        --cm-toolbar-btn-hover-fg: #e8e6e1;
+      }
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background: #faf9f6;
-      color: #1f1f1f;
+      background: var(--bg-body);
+      color: var(--fg-main);
       line-height: 1.6;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     .container {
@@ -33,35 +100,37 @@
     h1 {
       font-size: 1.5rem;
       margin-bottom: 20px;
-      color: #1f1f1f;
+      color: var(--fg-main);
     }
 
     .section {
-      background: #fff;
+      background: var(--bg-card);
       border-radius: 8px;
       padding: 20px;
       margin-bottom: 20px;
-      border: 1px solid #e0e0e0;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border: 1px solid var(--border-main);
+      box-shadow: 0 1px 3px var(--shadow);
+      transition: background 0.3s ease, border-color 0.3s ease;
     }
 
     label {
       display: block;
       font-weight: 600;
       margin-bottom: 5px;
-      color: #555;
+      color: var(--fg-label);
     }
 
     input[type="text"],
     input[type="date"] {
       width: 100%;
       padding: 10px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--border-input);
       border-radius: 6px;
       font-size: 14px;
       font-family: inherit;
-      background: #fff;
-      color: #1f1f1f;
+      background: var(--bg-input);
+      color: var(--fg-main);
+      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
 
     .row {
@@ -76,23 +145,24 @@
     }
 
     button {
-      background: #1f1f1f;
-      color: #fff;
+      background: var(--btn-bg);
+      color: var(--btn-fg);
       border: none;
       padding: 12px 24px;
       border-radius: 6px;
       cursor: pointer;
       font-size: 14px;
       font-weight: 600;
+      transition: background 0.2s ease;
     }
 
     button:hover {
-      background: #333;
+      background: var(--btn-hover);
     }
 
     button:disabled {
-      background: #ccc;
-      color: #666;
+      background: var(--btn-disabled-bg);
+      color: var(--btn-disabled-fg);
       cursor: not-allowed;
     }
 
@@ -102,8 +172,9 @@
 
     .help {
       font-size: 12px;
-      color: #666;
+      color: var(--fg-help);
       margin-top: 4px;
+      transition: color 0.3s ease;
     }
 
     .status {
@@ -114,50 +185,50 @@
     }
 
     .status.success {
-      background: #d4edda;
-      color: #155724;
+      background: var(--status-success-bg);
+      color: var(--status-success-fg);
       display: block;
-      border: 1px solid #c3e6cb;
+      border: 1px solid var(--status-success-border);
     }
 
     .status.error {
-      background: #f8d7da;
-      color: #721c24;
+      background: var(--status-error-bg);
+      color: var(--status-error-fg);
       display: block;
-      border: 1px solid #f5c6cb;
+      border: 1px solid var(--status-error-border);
     }
 
-    /* EasyMDE Light Theme Override */
+    /* EasyMDE Theme Override */
     .EasyMDEContainer {
-      border: 1px solid #ddd !important;
+      border: 1px solid var(--border-input) !important;
       border-radius: 6px !important;
       overflow: hidden;
     }
 
     .EasyMDEContainer .CodeMirror {
-      background: #fff !important;
-      color: #1f1f1f !important;
+      background: var(--cm-bg) !important;
+      color: var(--cm-fg) !important;
       border: none !important;
     }
 
     .EasyMDEContainer .CodeMirror-cursor {
-      border-color: #1f1f1f !important;
+      border-color: var(--cm-cursor) !important;
     }
 
     .EasyMDEContainer .editor-toolbar {
-      background: #faf9f6 !important;
-      border-bottom: 1px solid #e0e0e0 !important;
+      background: var(--cm-toolbar-bg) !important;
+      border-bottom: 1px solid var(--border-main) !important;
     }
 
     .EasyMDEContainer .editor-toolbar button {
-      color: #555 !important;
+      color: var(--cm-toolbar-btn) !important;
       background: transparent !important;
       border: none !important;
     }
 
     .EasyMDEContainer .editor-toolbar button:hover {
-      background: #e0e0e0 !important;
-      color: #1f1f1f !important;
+      background: var(--cm-toolbar-btn-hover-bg) !important;
+      color: var(--cm-toolbar-btn-hover-fg) !important;
     }
 
     .EasyMDEContainer .editor-toolbar i {
@@ -165,8 +236,8 @@
     }
 
     .editor-preview {
-      background: #fff !important;
-      color: #1f1f1f !important;
+      background: var(--cm-bg) !important;
+      color: var(--cm-fg) !important;
     }
 
     .editor-preview h1,
@@ -175,16 +246,16 @@
     .editor-preview h4,
     .editor-preview h5,
     .editor-preview h6 {
-      color: #1f1f1f !important;
+      color: var(--cm-fg) !important;
     }
 
     .editor-preview pre {
-      background: #f8f9fa !important;
-      border: 1px solid #e0e0e0 !important;
+      background: var(--bg-code) !important;
+      border: 1px solid var(--border-code) !important;
     }
 
     .editor-preview code {
-      background: #f8f9fa !important;
+      background: var(--bg-code) !important;
       color: #d4a574 !important;
       border-radius: 3px;
       padding: 0 3px;
@@ -192,7 +263,7 @@
 
     .editor-preview blockquote {
       border-left: 3px solid #8b5e3c !important;
-      background: #f8f9fa !important;
+      background: var(--bg-code) !important;
     }
 
     .cm-header {
@@ -202,12 +273,12 @@
 
     .cm-strong {
       font-weight: 700 !important;
-      color: #1f1f1f !important;
+      color: var(--cm-fg) !important;
     }
 
     .cm-em {
       font-style: italic !important;
-      color: #555 !important;
+      color: var(--fg-label) !important;
     }
 
     .cm-link {
@@ -219,19 +290,19 @@
     }
 
     .cm-quote {
-      color: #888 !important;
+      color: var(--fg-help) !important;
       font-style: italic !important;
     }
 
     .cm-code {
-      background: #f8f9fa !important;
+      background: var(--bg-code) !important;
       color: #d4a574 !important;
       border-radius: 3px;
       padding: 0 3px;
     }
 
     .cm-comment {
-      color: #888 !important;
+      color: var(--fg-help) !important;
     }
   </style>
 </head>
