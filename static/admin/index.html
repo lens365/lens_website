@@ -397,8 +397,8 @@
     // 设置默认日期
     document.getElementById('date').valueAsDate = new Date();
 
-    // 图片粘贴上传功能 - 使用更可靠的方式
-    document.addEventListener('paste', async function(e) {
+    // 图片粘贴功能：先转为 base64 本地预览，发布时统一上传
+    document.addEventListener('paste', function(e) {
       // 检查是否在编辑器区域内
       const activeElement = document.activeElement;
       const isInEditor = activeElement && (
@@ -416,88 +416,90 @@
           e.preventDefault();
 
           const blob = items[i].getAsFile();
-          const token = document.getElementById('token').value.trim();
-
-          if (!token) {
-            showStatus('请先输入 GitHub Token 才能上传图片', true);
-            return;
-          }
-
-          showStatus('正在上传图片...', false);
-
-          try {
-            const imageUrl = await uploadImage(blob, token);
-            if (imageUrl) {
-              // 在当前光标位置插入图片
-              const cm = easyMDE.codemirror;
-              const cursor = cm.getCursor();
-              cm.replaceRange(`\n![image](${imageUrl})\n`, cursor);
-              showStatus('图片上传成功', false);
-            }
-          } catch (err) {
-            showStatus('图片上传失败: ' + err.message, true);
-          }
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            const base64 = evt.target.result;
+            const cm = easyMDE.codemirror;
+            const cursor = cm.getCursor();
+            cm.replaceRange(`\n![image](${base64})\n`, cursor);
+            showStatus('图片已插入编辑器（将在发布时自动上传到仓库）', false);
+          };
+          reader.onerror = () => showStatus('读取图片失败', true);
+          reader.readAsDataURL(blob);
           break;
         }
       }
     });
 
-    // 上传图片到 GitHub
-    async function uploadImage(file, token) {
-      const ext = file.name ? file.name.split('.').pop() : 'png';
-      const filename = `image-${Date.now()}.${ext}`;
+    // 上传单张图片到 GitHub（用于发布时统一处理）
+    async function uploadImageToGithub(base64Data, mimeType, token) {
+      const ext = mimeType === 'jpeg' ? 'jpg' : mimeType;
+      const filename = `image-${Date.now()}-${Math.random().toString(36).substr(2, 6)}.${ext}`;
       const path = `static/images/${filename}`;
 
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = async function() {
-          const base64 = reader.result.split(',')[1];
+      // 去掉 data:image/xxx;base64, 前缀
+      const base64Content = base64Data.split(',')[1];
 
-          try {
-            // 检查文件是否已存在
-            let sha = null;
-            try {
-              const checkRes = await fetch(`https://api.github.com/repos/lens365/lens_website/contents/${path}`, {
-                headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-              });
-              if (checkRes.status === 200) {
-                const data = await checkRes.json();
-                sha = data.sha;
-              }
-            } catch (e) {}
+      // 检查文件是否已存在
+      let sha = null;
+      try {
+        const checkRes = await fetch(`https://api.github.com/repos/lens365/lens_website/contents/${path}`, {
+          headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (checkRes.status === 200) {
+          const data = await checkRes.json();
+          sha = data.sha;
+        }
+      } catch (e) {}
 
-            const body = {
-              message: `upload image: ${filename}`,
-              content: base64,
-              branch: 'main'
-            };
-            if (sha) body.sha = sha;
+      const body = {
+        message: `upload image: ${filename}`,
+        content: base64Content,
+        branch: 'main'
+      };
+      if (sha) body.sha = sha;
 
-            const res = await fetch(`https://api.github.com/repos/lens365/lens_website/contents/${path}`, {
-              method: 'PUT',
-              headers: {
-                'Authorization': `token ${token}`,
-                'Accept': 'application/vnd.github.v3+json',
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(body)
-            });
-
-            if (res.ok) {
-              const data = await res.json();
-              // 返回图片的 raw URL
-              resolve(data.content.download_url);
-            } else {
-              const err = await res.json();
-              reject(new Error(err.message || '上传失败'));
-            }
-          } catch (err) {
-            reject(err);
-          }
-        };
-        reader.onerror = () => reject(new Error('读取文件失败'));
-        reader.readAsDataURL(file);
+      const res = await fetch(`https://api.github.com/repos/lens365/lens_website/contents/${path}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${token}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
       });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || '上传失败');
+      }
+
+      const data = await res.json();
+      return data.content.download_url;
+    }
+
+    // 发布前扫描并上传文章中的 base64 图片
+    async function processBase64Images(content, token) {
+      const regex = /!\[([^\]]*)\]\((data:image\/([a-z0-9]+);base64,([^)]+))\)/gi;
+      let result = content;
+      let match;
+
+      while ((match = regex.exec(content)) !== null) {
+        const fullMatch = match[0];
+        const altText = match[1];
+        const mimeType = match[3];
+        const base64Data = match[2]; // 包含 data:image/... 前缀
+
+        try {
+          showStatus('正在上传文章中的图片...', false);
+          const url = await uploadImageToGithub(base64Data, mimeType, token);
+          result = result.replace(fullMatch, `![${altText}](${url})`);
+        } catch (err) {
+          console.error('上传图片失败:', err);
+        }
+      }
+
+      return result;
     }
 
     function showStatus(msg, isError) {
@@ -611,10 +613,16 @@
       const originalText = btn.textContent;
       btn.textContent = editPath ? '保存中...' : '发布中...';
 
+      // 发布前，先把文章中的 base64 图片上传到 GitHub
+      let processedContent = content;
+      if (token) {
+        processedContent = await processBase64Images(content, token);
+      }
+
       let frontMatter = `+++\ntitle = "${title}"\ndescription = "${title} - Lens Note"\ndate = "${date}"\ndraft = false\n`;
       if (tags.length) frontMatter += `tags = [${tags.map(t => `"${t}"`).join(', ')}]\n`;
       if (categories.length) frontMatter += `categories = [${categories.map(c => `"${c}"`).join(', ')}]\n`;
-      frontMatter += `+++\n\n${content}`;
+      frontMatter += `+++\n\n${processedContent}`;
 
       const path = editPath || `content/posts/${filename}.md`;
       const encodedContent = btoa(unescape(encodeURIComponent(frontMatter)));
