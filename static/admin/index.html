@@ -7,6 +7,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
+  <meta name="color-scheme" content="light dark">
   <title>post edit - Lens</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
   <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
@@ -49,38 +50,36 @@
       --cm-toolbar-btn-hover-fg: #1f1f1f;
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg-body: #0d0d0d;
-        --bg-card: #1a1a1a;
-        --bg-input: #262626;
-        --bg-code: #262626;
-        --fg-main: #e8e6e1;
-        --fg-label: #d4d2cc;
-        --fg-help: #888;
-        --border-main: #333;
-        --border-input: #333;
-        --border-code: #333;
-        --btn-bg: #e8e6e1;
-        --btn-fg: #0d0d0d;
-        --btn-hover: #d4d2cc;
-        --btn-disabled-bg: #444;
-        --btn-disabled-fg: #888;
-        --shadow: rgba(0,0,0,0.2);
-        --status-success-bg: #1a3a1a;
-        --status-success-fg: #7cb342;
-        --status-success-border: #2e5c2e;
-        --status-error-bg: #3a1a1a;
-        --status-error-fg: #e57373;
-        --status-error-border: #5c2e2e;
-        --cm-bg: #262626;
-        --cm-fg: #e8e6e1;
-        --cm-cursor: #e8e6e1;
-        --cm-toolbar-bg: #1a1a1a;
-        --cm-toolbar-btn: #d4d2cc;
-        --cm-toolbar-btn-hover-bg: #333;
-        --cm-toolbar-btn-hover-fg: #e8e6e1;
-      }
+    [data-theme="dark"] {
+      --bg-body: #0d0d0d;
+      --bg-card: #1a1a1a;
+      --bg-input: #262626;
+      --bg-code: #262626;
+      --fg-main: #e8e6e1;
+      --fg-label: #d4d2cc;
+      --fg-help: #888;
+      --border-main: #333;
+      --border-input: #333;
+      --border-code: #333;
+      --btn-bg: #e8e6e1;
+      --btn-fg: #0d0d0d;
+      --btn-hover: #d4d2cc;
+      --btn-disabled-bg: #444;
+      --btn-disabled-fg: #888;
+      --shadow: rgba(0,0,0,0.2);
+      --status-success-bg: #1a3a1a;
+      --status-success-fg: #7cb342;
+      --status-success-border: #2e5c2e;
+      --status-error-bg: #3a1a1a;
+      --status-error-fg: #e57373;
+      --status-error-border: #5c2e2e;
+      --cm-bg: #262626;
+      --cm-fg: #e8e6e1;
+      --cm-cursor: #e8e6e1;
+      --cm-toolbar-bg: #1a1a1a;
+      --cm-toolbar-btn: #d4d2cc;
+      --cm-toolbar-btn-hover-bg: #333;
+      --cm-toolbar-btn-hover-fg: #e8e6e1;
     }
 
     body {
@@ -97,10 +96,35 @@
       padding: 20px;
     }
 
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
     h1 {
       font-size: 1.5rem;
-      margin-bottom: 20px;
       color: var(--fg-main);
+    }
+
+    .theme-toggle {
+      background: var(--bg-card);
+      color: var(--fg-main);
+      border: 1px solid var(--border-main);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-input);
     }
 
     .section {
@@ -309,7 +333,13 @@
 
 <body>
   <div class="container">
-    <h1>Post Edit</h1>
+    <div class="header">
+      <h1>Post Edit</h1>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换主题">
+        <span id="themeIcon">🌙</span>
+        <span id="themeText">深色</span>
+      </button>
+    </div>
 
     <div class="section token-input">
       <label>GitHub Personal Access Token</label>
@@ -356,6 +386,40 @@
   </div>
 
   <script>
+    // 主题管理
+    function initTheme() {
+      const saved = localStorage.getItem('colorscheme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = saved || (prefersDark ? 'dark' : 'light');
+      applyTheme(theme, false);
+    }
+
+    function applyTheme(theme, save) {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.style.colorScheme = theme;
+      const icon = document.getElementById('themeIcon');
+      const text = document.getElementById('themeText');
+      if (theme === 'dark') {
+        icon.textContent = '☀️';
+        text.textContent = '亮色';
+      } else {
+        icon.textContent = '🌙';
+        text.textContent = '深色';
+      }
+      if (save !== false) {
+        localStorage.setItem('colorscheme', theme);
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      applyTheme(next, true);
+    }
+
+    // 初始化主题
+    initTheme();
+
     // 检查是否是新建文章模式
     const urlParams = new URLSearchParams(window.location.search);
     const editPath = urlParams.get('edit');
