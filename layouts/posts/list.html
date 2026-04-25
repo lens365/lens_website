@@ -109,8 +109,8 @@
         {{ range .RegularPages }}
         {
           title: {{ .Title | jsonify }},
-          permalink: {{ .RelPermalink | jsonify }},
-          date: {{ .Date | time.Format (.Site.Params.dateFormat | default "January 2, 2006") | jsonify }},
+          permalink: "{{ .RelPermalink }}",
+          date: "{{ .Date | time.Format (.Site.Params.dateFormat | default "January 2, 2006") }}",
           content: {{ .Plain | jsonify }}
         },
         {{ end }}
