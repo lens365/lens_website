@@ -96,35 +96,10 @@
       padding: 20px;
     }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
     h1 {
       font-size: 1.5rem;
+      margin-bottom: 20px;
       color: var(--fg-main);
-    }
-
-    .theme-toggle {
-      background: var(--bg-card);
-      color: var(--fg-main);
-      border: 1px solid var(--border-main);
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.2s ease, color 0.2s ease;
-    }
-
-    .theme-toggle:hover {
-      background: var(--bg-input);
     }
 
     .section {
@@ -333,13 +308,7 @@
 
 <body>
   <div class="container">
-    <div class="header">
-      <h1>Post Edit</h1>
-      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换主题">
-        <span id="themeIcon">🌙</span>
-        <span id="themeText">深色</span>
-      </button>
-    </div>
+    <h1>Post Edit</h1>
 
     <div class="section token-input">
       <label>GitHub Personal Access Token</label>
@@ -386,39 +355,14 @@
   </div>
 
   <script>
-    // 主题管理
-    function initTheme() {
+    // 主题管理：自动跟随网站主题（localStorage）或系统偏好
+    (function initTheme() {
       const saved = localStorage.getItem('colorscheme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const theme = saved || (prefersDark ? 'dark' : 'light');
-      applyTheme(theme, false);
-    }
-
-    function applyTheme(theme, save) {
       document.documentElement.setAttribute('data-theme', theme);
       document.documentElement.style.colorScheme = theme;
-      const icon = document.getElementById('themeIcon');
-      const text = document.getElementById('themeText');
-      if (theme === 'dark') {
-        icon.textContent = '☀️';
-        text.textContent = '亮色';
-      } else {
-        icon.textContent = '🌙';
-        text.textContent = '深色';
-      }
-      if (save !== false) {
-        localStorage.setItem('colorscheme', theme);
-      }
-    }
-
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme') || 'light';
-      const next = current === 'dark' ? 'light' : 'dark';
-      applyTheme(next, true);
-    }
-
-    // 初始化主题
-    initTheme();
+    })();
 
     // 检查是否是新建文章模式
     const urlParams = new URLSearchParams(window.location.search);
