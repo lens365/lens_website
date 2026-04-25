@@ -96,9 +96,35 @@
       padding: 20px;
     }
 
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
     h1 {
       font-size: 1.5rem;
-      margin-bottom: 20px;
+      color: var(--fg-main);
+    }
+
+    .back-link {
+      color: var(--fg-label);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border-main);
+      background: var(--bg-card);
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .back-link:hover {
+      background: var(--bg-input);
       color: var(--fg-main);
     }
 
@@ -308,7 +334,10 @@
 
 <body>
   <div class="container">
-    <h1>Post Edit</h1>
+    <div class="page-header">
+      <h1>Post Edit</h1>
+      <a href="/" class="back-link">← 回到主页</a>
+    </div>
 
     <div class="section token-input">
       <label>GitHub Personal Access Token</label>
@@ -521,7 +550,7 @@
     const tokenInput = document.getElementById('token');
 
     if (editPath) {
-      document.querySelector('h1').textContent = 'Edit Post';
+      document.querySelector('.page-header h1').textContent = 'Edit Post';
       document.getElementById('submit').textContent = 'Save Changes';
       // 先隐藏编辑区域，等 token 输入后再显示
       document.querySelector('.section:last-child').style.display = 'none';
