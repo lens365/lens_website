@@ -149,7 +149,7 @@
         } else {
           list.innerHTML = results.map(function(r) {
             var p = r.item;
-            return '<li><span class="date">' + escapeHtml(p.date) + '</span><a class="title" href="' + escapeHtml(p.url) + '">' + escapeHtml(p.title) + '</a></li>';
+            return '<li><span class="date">' + escapeHtml(p.date) + '</span><a class="title" href="' + escapeHtml(p.url).replace(/^\//, '') + '">' + escapeHtml(p.title) + '</a></li>';
           }).join('');
           notice.style.display = 'none';
         }
