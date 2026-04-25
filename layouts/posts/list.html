@@ -106,7 +106,7 @@
       const originalHtml = list.innerHTML;
 
       const allPosts = [
-        {{ range where .Site.RegularPages "Section" "posts" }}
+        {{ range .Pages }}
         {
           title: {{ .Title | jsonify }},
           date: {{ .Date.Format "January 2, 2006" | jsonify }},
