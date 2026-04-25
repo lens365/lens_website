@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="(prefers-color-scheme: light)">
   <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -39,40 +40,18 @@
       --cm-toolbar-bg: #1a1a1a; --cm-toolbar-btn: #d4d2cc;
       --cm-toolbar-btn-hover-bg: #333; --cm-toolbar-btn-hover-fg: #e8e6e1;
     }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background: var(--bg-body); color: var(--fg-main); line-height: 1.6;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg-body); color: var(--fg-main); line-height: 1.6; transition: background 0.3s ease, color 0.3s ease; }
     .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
     .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     h1 { font-size: 1.5rem; color: var(--fg-main); }
-    .back-link {
-      color: var(--fg-label); text-decoration: none; font-size: 14px; font-weight: 600;
-      display: flex; align-items: center; gap: 4px; padding: 6px 12px;
-      border-radius: 6px; border: 1px solid var(--border-main); background: var(--bg-card);
-      transition: background 0.2s ease, color 0.2s ease;
-    }
+    .back-link { color: var(--fg-label); text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 4px; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-main); background: var(--bg-card); transition: background 0.2s ease, color 0.2s ease; }
     .back-link:hover { background: var(--bg-input); color: var(--fg-main); }
-    .section {
-      background: var(--bg-card); border-radius: 8px; padding: 20px;
-      margin-bottom: 20px; border: 1px solid var(--border-main);
-      box-shadow: 0 1px 3px var(--shadow); transition: background 0.3s ease, border-color 0.3s ease;
-    }
+    .section { background: var(--bg-card); border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border-main); box-shadow: 0 1px 3px var(--shadow); transition: background 0.3s ease, border-color 0.3s ease; }
     label { display: block; font-weight: 600; margin-bottom: 5px; color: var(--fg-label); }
-    input[type="text"], input[type="date"] {
-      width: 100%; padding: 10px; border: 1px solid var(--border-input);
-      border-radius: 6px; font-size: 14px; font-family: inherit;
-      background: var(--bg-input); color: var(--fg-main);
-      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-    }
+    input[type="text"], input[type="date"] { width: 100%; padding: 10px; border: 1px solid var(--border-input); border-radius: 6px; font-size: 14px; font-family: inherit; background: var(--bg-input); color: var(--fg-main); transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
     .row.single { grid-template-columns: 1fr; }
-    button {
-      background: var(--btn-bg); color: var(--btn-fg); border: none;
-      padding: 12px 24px; border-radius: 6px; cursor: pointer;
-      font-size: 14px; font-weight: 600; transition: background 0.2s ease;
-    }
+    button { background: var(--btn-bg); color: var(--btn-fg); border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; transition: background 0.2s ease; }
     button:hover { background: var(--btn-hover); }
     button:disabled { background: var(--btn-disabled-bg); color: var(--btn-disabled-fg); cursor: not-allowed; }
     .token-input { margin-bottom: 20px; }
@@ -80,6 +59,19 @@
     .status { padding: 12px; border-radius: 6px; margin-top: 15px; display: none; }
     .status.success { background: var(--status-success-bg); color: var(--status-success-fg); display: block; border: 1px solid var(--status-success-border); }
     .status.error { background: var(--status-error-bg); color: var(--status-error-fg); display: block; border: 1px solid var(--status-error-border); }
+
+    /* Search */
+    .search-box { position: relative; }
+    .search-box input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-input); border-radius: 6px; font-size: 14px; background: var(--bg-input); color: var(--fg-main); transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+    .search-results { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-main); border-radius: 6px; box-shadow: 0 4px 12px var(--shadow); max-height: 320px; overflow-y: auto; z-index: 100; margin-top: 4px; display: none; }
+    .search-results.active { display: block; }
+    .search-result-item { padding: 12px 16px; border-bottom: 1px solid var(--border-main); cursor: pointer; transition: background 0.2s; }
+    .search-result-item:hover { background: var(--bg-input); }
+    .search-result-item:last-child { border-bottom: none; }
+    .search-result-title { font-weight: 600; color: var(--fg-main); margin-bottom: 4px; font-size: 14px; }
+    .search-result-excerpt { font-size: 12px; color: var(--fg-help); line-height: 1.5; }
+    .search-no-results { padding: 16px; color: var(--fg-help); text-align: center; font-size: 14px; }
+    .search-loading { padding: 16px; color: var(--fg-help); text-align: center; font-size: 14px; }
 
     /* EasyMDE Theme Override */
     .EasyMDEContainer { border: 1px solid var(--border-input) !important; border-radius: 6px !important; overflow: hidden; }
@@ -91,26 +83,10 @@
     .EasyMDEContainer .editor-toolbar i { color: inherit !important; }
     .editor-preview { background: var(--cm-bg) !important; color: var(--cm-fg) !important; }
     .editor-preview h1, .editor-preview h2, .editor-preview h3, .editor-preview h4, .editor-preview h5, .editor-preview h6 { color: var(--cm-fg) !important; }
-    .editor-preview pre {
-      background: var(--bg-code) !important; border: 1px solid var(--border-code) !important;
-      border-radius: 6px; padding: 16px; overflow-x: auto; margin: 1em 0;
-    }
-    .editor-preview pre code {
-      background: transparent !important; border: none !important; padding: 0 !important;
-      border-radius: 0 !important; color: inherit !important;
-      font-family: "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-      font-size: 14px; line-height: 1.6;
-    }
-    .editor-preview code {
-      background: var(--bg-code) !important; color: #d4a574 !important;
-      border-radius: 4px; padding: 2px 6px;
-      font-family: "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-      font-size: 0.9em;
-    }
-    .editor-preview blockquote {
-      border-left: 3px solid #8b5e3c !important; background: var(--bg-code) !important;
-      padding: 12px 16px; margin: 1em 0; border-radius: 0 6px 6px 0;
-    }
+    .editor-preview pre { background: var(--bg-code) !important; border: 1px solid var(--border-code) !important; border-radius: 6px; padding: 16px; overflow-x: auto; margin: 1em 0; }
+    .editor-preview pre code { background: transparent !important; border: none !important; padding: 0 !important; border-radius: 0 !important; color: inherit !important; font-family: "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; font-size: 14px; line-height: 1.6; }
+    .editor-preview code { background: var(--bg-code) !important; color: #d4a574 !important; border-radius: 4px; padding: 2px 6px; font-family: "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.9em; }
+    .editor-preview blockquote { border-left: 3px solid #8b5e3c !important; background: var(--bg-code) !important; padding: 12px 16px; margin: 1em 0; border-radius: 0 6px 6px 0; }
     .cm-header { color: #d4a574 !important; font-weight: 600 !important; }
     .cm-strong { font-weight: 700 !important; color: var(--cm-fg) !important; }
     .cm-em { font-style: italic !important; color: var(--fg-label) !important; }
@@ -131,6 +107,12 @@
       <label>GitHub Personal Access Token</label>
       <input type="text" id="token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
       <p class="help">Generate at https://github.com/settings/tokens, check repo scope</p>
+    </div>
+    <div class="section search-box">
+      <label>Search Posts</label>
+      <input type="text" id="searchInput" placeholder="Type to search existing posts..." oninput="onSearchInput(this.value)" onfocus="onSearchFocus()">
+      <div id="searchResults" class="search-results"></div>
+      <p class="help">Fuzzy search across all published posts (requires Token)</p>
     </div>
     <div class="section">
       <div class="row">
@@ -170,7 +152,6 @@
       placeholder: '# Write your article here...\n\nMarkdown syntax supported, preview on the right'
     });
 
-    // Watch for preview panel and auto-highlight code blocks
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((m) => {
         m.addedNodes.forEach((node) => {
@@ -185,6 +166,101 @@
 
     document.getElementById('date').valueAsDate = new Date();
     const pendingImages = new Map();
+    let fuse = null;
+    let postsCache = [];
+    let searchLoading = false;
+
+    async function loadPostsIndex(token) {
+      if (searchLoading || fuse) return;
+      searchLoading = true;
+      try {
+        const res = await fetch('https://api.github.com/repos/lens365/lens_website/contents/content/posts', {
+          headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (!res.ok) return;
+        const files = await res.json();
+        const posts = [];
+        for (const file of files) {
+          if (!file.name.endsWith('.md')) continue;
+          try {
+            const contentRes = await fetch(file.url, {
+              headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (!contentRes.ok) continue;
+            const data = await contentRes.json();
+            const content = decodeURIComponent(escape(atob(data.content)));
+            const titleMatch = content.match(/title\s*=\s*"([^"]+)"/);
+            const title = titleMatch ? titleMatch[1] : file.name.replace('.md', '');
+            const body = content.replace(/^\+\+\+[\s\S]*?\+\+\+/, '').trim();
+            const excerpt = body.substring(0, 180).replace(/[#*`\[\]!]/g, '').replace(/\n+/g, ' ');
+            posts.push({ title, content: body, excerpt, filename: file.name, url: `/posts/${file.name.replace('.md', '')}/` });
+          } catch (e) {}
+        }
+        postsCache = posts;
+        fuse = new Fuse(posts, {
+          keys: ['title', 'content'],
+          threshold: 0.35,
+          includeScore: true,
+          ignoreLocation: true,
+          minMatchCharLength: 2
+        });
+      } catch (e) {
+        console.error('Failed to load posts index:', e);
+      } finally {
+        searchLoading = false;
+      }
+    }
+
+    function onSearchInput(query) {
+      const resultsEl = document.getElementById('searchResults');
+      if (!query.trim()) {
+        resultsEl.classList.remove('active');
+        resultsEl.innerHTML = '';
+        return;
+      }
+      if (!fuse) {
+        const token = document.getElementById('token').value.trim();
+        if (token) {
+          resultsEl.classList.add('active');
+          resultsEl.innerHTML = '<div class="search-loading">Loading posts index...</div>';
+          loadPostsIndex(token).then(() => onSearchInput(query));
+        } else {
+          resultsEl.classList.add('active');
+          resultsEl.innerHTML = '<div class="search-no-results">Please enter GitHub Token first</div>';
+        }
+        return;
+      }
+      const results = fuse.search(query.trim()).slice(0, 6);
+      if (results.length === 0) {
+        resultsEl.innerHTML = '<div class="search-no-results">No results found</div>';
+      } else {
+        resultsEl.innerHTML = results.map(r => {
+          const item = r.item;
+          return `<div class="search-result-item" onclick="window.open('${item.url}', '_blank')">
+            <div class="search-result-title">${escapeHtml(item.title)}</div>
+            <div class="search-result-excerpt">${escapeHtml(item.excerpt)}...</div>
+          </div>`;
+        }).join('');
+      }
+      resultsEl.classList.add('active');
+    }
+
+    function onSearchFocus() {
+      const query = document.getElementById('searchInput').value;
+      if (query.trim()) onSearchInput(query);
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.search-box')) {
+        document.getElementById('searchResults').classList.remove('active');
+      }
+    });
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
 
     document.addEventListener('paste', function(e) {
       const activeElement = document.activeElement;
@@ -298,6 +374,7 @@
     tokenInput.addEventListener('change', async function () {
       const token = this.value.trim();
       if (!token) return;
+      loadPostsIndex(token);
       if (editPath) {
         showStatus('Loading article...', false);
         await loadArticle(editPath, token);
