@@ -10,7 +10,10 @@
   <meta name="color-scheme" content="light dark">
   <title>Post Edit - Lens</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="(prefers-color-scheme: light)">
   <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -277,18 +280,38 @@
     .editor-preview pre {
       background: var(--bg-code) !important;
       border: 1px solid var(--border-code) !important;
+      border-radius: 6px;
+      padding: 16px;
+      overflow-x: auto;
+      margin: 1em 0;
+    }
+
+    .editor-preview pre code {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 !important;
+      border-radius: 0 !important;
+      color: inherit !important;
+      font-family: "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 14px;
+      line-height: 1.6;
     }
 
     .editor-preview code {
       background: var(--bg-code) !important;
       color: #d4a574 !important;
-      border-radius: 3px;
-      padding: 0 3px;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.9em;
     }
 
     .editor-preview blockquote {
       border-left: 3px solid #8b5e3c !important;
       background: var(--bg-code) !important;
+      padding: 12px 16px;
+      margin: 1em 0;
+      border-radius: 0 6px 6px 0;
     }
 
     .cm-header {
@@ -421,7 +444,17 @@
       ],
       status: false,
       minHeight: '300px',
-      placeholder: '# Write your article here...\n\nMarkdown syntax supported, preview on the right'
+      placeholder: '# Write your article here...\n\nMarkdown syntax supported, preview on the right',
+      previewRender: function(plainText, preview) {
+        const html = this.parent.markdown(plainText);
+        setTimeout(() => {
+          preview.innerHTML = html;
+          preview.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightElement(block);
+          });
+        }, 0);
+        return 'Loading...';
+      }
     });
 
     // Set default date
