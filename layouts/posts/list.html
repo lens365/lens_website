@@ -110,7 +110,7 @@
         {
           title: {{ .Title | jsonify }},
           date: {{ .Date.Format "January 2, 2006" | jsonify }},
-          url: {{ .RelPermalink | jsonify }},
+          url: {{ .Params.externalLink | default .RelPermalink | jsonify }},
           summary: {{ .Summary | plainify | jsonify }},
           content: {{ .Plain | jsonify }}
         },
@@ -147,10 +147,21 @@
           notice.style.display = 'block';
           notice.textContent = 'No posts found for "' + escapeHtml(query.trim()) + '"';
         } else {
-          list.innerHTML = results.map(function(r) {
+          list.innerHTML = '';
+          results.forEach(function(r) {
             var p = r.item;
-            return '<li><span class="date">' + escapeHtml(p.date) + '</span><a class="title" href="' + escapeHtml(p.url) + '">' + escapeHtml(p.title) + '</a></li>';
-          }).join('');
+            var li = document.createElement('li');
+            var dateSpan = document.createElement('span');
+            dateSpan.className = 'date';
+            dateSpan.textContent = p.date;
+            var a = document.createElement('a');
+            a.className = 'title';
+            a.href = p.url;
+            a.textContent = p.title;
+            li.appendChild(dateSpan);
+            li.appendChild(a);
+            list.appendChild(li);
+          });
           notice.style.display = 'none';
         }
       };
