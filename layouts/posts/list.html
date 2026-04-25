@@ -16,7 +16,10 @@
     {{ .Content }}
 
     <div class="post-search">
-      <input type="text" id="postSearch" placeholder="Search posts..." oninput="filterPosts(this.value)">
+      <div class="search-field">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="postSearch" placeholder="Search posts..." oninput="filterPosts(this.value)">
+      </div>
     </div>
 
     <ul id="postsList">
@@ -32,6 +35,68 @@
     {{ partial "pagination.html" . }}
   </section>
 
+  <style>
+    .post-search { margin: 1.5em 0; }
+    .search-field {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-field .search-icon {
+      position: absolute;
+      left: 14px;
+      color: #999;
+      font-size: 14px;
+      pointer-events: none;
+      transition: color 0.25s ease;
+    }
+    .search-field input {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      border: 1.5px solid #e5e4df;
+      border-radius: 12px;
+      font-size: 15px;
+      background: #fff;
+      color: #1f1f1f;
+      transition: all 0.25s ease;
+      font-family: inherit;
+      -webkit-appearance: none;
+    }
+    .search-field input::placeholder { color: #aaa; }
+    .search-field input:focus {
+      outline: none;
+      border-color: #8b5e3c;
+      box-shadow: 0 0 0 4px rgba(139, 94, 60, 0.08);
+    }
+    .search-field:focus-within .search-icon { color: #8b5e3c; }
+
+    @media (prefers-color-scheme: dark) {
+      .search-field input {
+        background: #1a1a1a;
+        border-color: #333;
+        color: #e8e6e1;
+      }
+      .search-field input::placeholder { color: #666; }
+      .search-field input:focus {
+        border-color: #d4a574;
+        box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.12);
+      }
+      .search-field .search-icon { color: #666; }
+      .search-field:focus-within .search-icon { color: #d4a574; }
+    }
+    body.dark .search-field input {
+      background: #1a1a1a;
+      border-color: #333;
+      color: #e8e6e1;
+    }
+    body.dark .search-field input::placeholder { color: #666; }
+    body.dark .search-field input:focus {
+      border-color: #d4a574;
+      box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.12);
+    }
+    body.dark .search-field .search-icon { color: #666; }
+    body.dark .search-field:focus-within .search-icon { color: #d4a574; }
+  </style>
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
   <script>
     (function() {
@@ -73,12 +138,14 @@
         if (!fuse) {
           list.innerHTML = '';
           notice.style.display = 'block';
+          notice.textContent = 'No posts found';
           return;
         }
-        const results = fuse.search(query.trim());
+        var results = fuse.search(query.trim());
         if (results.length === 0) {
           list.innerHTML = '';
           notice.style.display = 'block';
+          notice.textContent = 'No posts found for "' + escapeHtml(query.trim()) + '"';
         } else {
           list.innerHTML = results.map(function(r) {
             var p = r.item;
