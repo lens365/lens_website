@@ -13,7 +13,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="(prefers-color-scheme: light)">
   <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -108,12 +107,6 @@
       <input type="text" id="token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
       <p class="help">Generate at https://github.com/settings/tokens, check repo scope</p>
     </div>
-    <div class="section search-box">
-      <label>Search Posts</label>
-      <input type="text" id="searchInput" placeholder="Type to search existing posts..." oninput="onSearchInput(this.value)" onfocus="onSearchFocus()">
-      <div id="searchResults" class="search-results"></div>
-      <p class="help">Fuzzy search across all published posts (requires Token)</p>
-    </div>
     <div class="section">
       <div class="row">
         <div><label>Title</label><input type="text" id="title" placeholder="Article Title"></div>
@@ -166,102 +159,6 @@
 
     document.getElementById('date').valueAsDate = new Date();
     const pendingImages = new Map();
-    let fuse = null;
-    let postsCache = [];
-    let searchLoading = false;
-
-    async function loadPostsIndex(token) {
-      if (searchLoading || fuse) return;
-      searchLoading = true;
-      try {
-        const res = await fetch('https://api.github.com/repos/lens365/lens_website/contents/content/posts', {
-          headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-        });
-        if (!res.ok) return;
-        const files = await res.json();
-        const posts = [];
-        for (const file of files) {
-          if (!file.name.endsWith('.md')) continue;
-          try {
-            const contentRes = await fetch(file.url, {
-              headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-            });
-            if (!contentRes.ok) continue;
-            const data = await contentRes.json();
-            const content = decodeURIComponent(escape(atob(data.content)));
-            const titleMatch = content.match(/title\s*=\s*"([^"]+)"/);
-            const title = titleMatch ? titleMatch[1] : file.name.replace('.md', '');
-            const body = content.replace(/^\+\+\+[\s\S]*?\+\+\+/, '').trim();
-            const excerpt = body.substring(0, 180).replace(/[#*`\[\]!]/g, '').replace(/\n+/g, ' ');
-            posts.push({ title, content: body, excerpt, filename: file.name, url: `/posts/${file.name.replace('.md', '')}/` });
-          } catch (e) {}
-        }
-        postsCache = posts;
-        fuse = new Fuse(posts, {
-          keys: ['title', 'content'],
-          threshold: 0.35,
-          includeScore: true,
-          ignoreLocation: true,
-          minMatchCharLength: 2
-        });
-      } catch (e) {
-        console.error('Failed to load posts index:', e);
-      } finally {
-        searchLoading = false;
-      }
-    }
-
-    function onSearchInput(query) {
-      const resultsEl = document.getElementById('searchResults');
-      if (!query.trim()) {
-        resultsEl.classList.remove('active');
-        resultsEl.innerHTML = '';
-        return;
-      }
-      if (!fuse) {
-        const token = document.getElementById('token').value.trim();
-        if (token) {
-          resultsEl.classList.add('active');
-          resultsEl.innerHTML = '<div class="search-loading">Loading posts index...</div>';
-          loadPostsIndex(token).then(() => onSearchInput(query));
-        } else {
-          resultsEl.classList.add('active');
-          resultsEl.innerHTML = '<div class="search-no-results">Please enter GitHub Token first</div>';
-        }
-        return;
-      }
-      const results = fuse.search(query.trim()).slice(0, 6);
-      if (results.length === 0) {
-        resultsEl.innerHTML = '<div class="search-no-results">No results found</div>';
-      } else {
-        resultsEl.innerHTML = results.map(r => {
-          const item = r.item;
-          return `<div class="search-result-item" onclick="window.open('${item.url}', '_blank')">
-            <div class="search-result-title">${escapeHtml(item.title)}</div>
-            <div class="search-result-excerpt">${escapeHtml(item.excerpt)}...</div>
-          </div>`;
-        }).join('');
-      }
-      resultsEl.classList.add('active');
-    }
-
-    function onSearchFocus() {
-      const query = document.getElementById('searchInput').value;
-      if (query.trim()) onSearchInput(query);
-    }
-
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.search-box')) {
-        document.getElementById('searchResults').classList.remove('active');
-      }
-    });
-
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
     document.addEventListener('paste', function(e) {
       const activeElement = document.activeElement;
       const isInEditor = activeElement && (
@@ -374,7 +271,6 @@
     tokenInput.addEventListener('change', async function () {
       const token = this.value.trim();
       if (!token) return;
-      loadPostsIndex(token);
       if (editPath) {
         showStatus('Loading article...', false);
         await loadArticle(editPath, token);

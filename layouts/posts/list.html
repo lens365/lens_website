@@ -14,12 +14,85 @@
       </a>
     </header>
     {{ .Content }}
-    <ul>
+
+    <div class="post-search">
+      <input type="text" id="postSearch" placeholder="Search posts..." oninput="filterPosts(this.value)">
+    </div>
+
+    <ul id="postsList">
       {{- range .Paginator.Pages -}}
         {{- .Render "li" -}}
       {{- end -}}
     </ul>
 
+    <div id="searchNotice" style="display:none; text-align:center; padding:2em 0; opacity:0.6;">
+      No posts found
+    </div>
+
     {{ partial "pagination.html" . }}
   </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+  <script>
+    (function() {
+      const list = document.getElementById('postsList');
+      const notice = document.getElementById('searchNotice');
+      const pagination = document.querySelector('.pagination');
+      const originalHtml = list.innerHTML;
+
+      const allPosts = [
+        {{ range where .Site.RegularPages "Section" "posts" }}
+        {
+          title: {{ .Title | jsonify }},
+          date: {{ .Date.Format "January 2, 2006" | jsonify }},
+          url: {{ .RelPermalink | jsonify }},
+          summary: {{ .Summary | plainify | jsonify }},
+          content: {{ .Plain | jsonify }}
+        },
+        {{ end }}
+      ];
+
+      let fuse = null;
+      if (typeof Fuse !== 'undefined' && allPosts.length > 0) {
+        fuse = new Fuse(allPosts, {
+          keys: ['title', 'summary', 'content'],
+          threshold: 0.35,
+          ignoreLocation: true,
+          minMatchCharLength: 2
+        });
+      }
+
+      window.filterPosts = function(query) {
+        if (!query.trim()) {
+          list.innerHTML = originalHtml;
+          notice.style.display = 'none';
+          if (pagination) pagination.style.display = '';
+          return;
+        }
+        if (pagination) pagination.style.display = 'none';
+        if (!fuse) {
+          list.innerHTML = '';
+          notice.style.display = 'block';
+          return;
+        }
+        const results = fuse.search(query.trim());
+        if (results.length === 0) {
+          list.innerHTML = '';
+          notice.style.display = 'block';
+        } else {
+          list.innerHTML = results.map(function(r) {
+            var p = r.item;
+            return '<li><span class="date">' + escapeHtml(p.date) + '</span><a class="title" href="' + escapeHtml(p.url) + '">' + escapeHtml(p.title) + '</a></li>';
+          }).join('');
+          notice.style.display = 'none';
+        }
+      };
+
+      function escapeHtml(text) {
+        var div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+    })();
+  </script>
 {{ end }}
