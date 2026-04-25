@@ -109,9 +109,7 @@
         {{ range .Pages }}
         {
           title: {{ .Title | jsonify }},
-          date: {{ .Date.Format "January 2, 2006" | jsonify }},
-          url: {{ .Params.externalLink | default .RelPermalink | jsonify }},
-          summary: {{ .Summary | plainify | jsonify }},
+          html: {{ .Render "search-li" | jsonify }},
           content: {{ .Plain | jsonify }}
         },
         {{ end }}
@@ -147,21 +145,9 @@
           notice.style.display = 'block';
           notice.textContent = 'No posts found for "' + escapeHtml(query.trim()) + '"';
         } else {
-          list.innerHTML = '';
-          results.forEach(function(r) {
-            var p = r.item;
-            var li = document.createElement('li');
-            var dateSpan = document.createElement('span');
-            dateSpan.className = 'date';
-            dateSpan.textContent = p.date;
-            var a = document.createElement('a');
-            a.className = 'title';
-            a.href = p.url;
-            a.textContent = p.title;
-            li.appendChild(dateSpan);
-            li.appendChild(a);
-            list.appendChild(li);
-          });
+          list.innerHTML = results.map(function(r) {
+            return r.item.html;
+          }).join('');
           notice.style.display = 'none';
         }
       };
