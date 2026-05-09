@@ -7,7 +7,7 @@ categories = ["read paper"]
 +++
 
 batch normalization 源于朴素的思想：在反向传播的过程中，诸如sigmoid等等activation函数在||x||趋于无穷大的时候的导数趋于0，这导致我们在梯度下降的时候极其容易陷入梯度消失的状态，导致极其难以收敛
-这里于是引入了covariate shift这个概念，即change in the distribution of the network parameters during training due to the change in network parameters during training 引入这个统计学概念，即通过改变输入来消除这个covariate shift 是我们的第一想法
+这里于是引入了covariate shift这个概念，即change in the distribution of the network parameters during training due to the change in network parameters  引入这个统计学概念，即通过改变输入来消除这个covariate shift 是我们的第一想法
 在此前whitening操作一直存在，这里首先是第一个办法：modify the network directly. 但是这里存在很显然的问题就是:x'=x-E[x]  那么当我们做出梯度下降，给x加了一个偏置项，x''=x+b  那么x'=x''-E[x'']=x-E[x]那么梯度下降就会失效这很显然不正确。他本质陷入的问题是将norm和optimization割裂开来，这样会导致norm失效
 下面第二种办法即为全局whitening：x'=Norm(x,X)其中x为单样本，X为训练集,这里x' = $Σ^{-1/2} (x - E[x])$,其中Σ为$Cov[x]=E[x x^T]-E[x]E[x]^T$   这个理论主要是由于最优化中的通过标准化和去相关化，将hessian矩阵标准化，把条件数κ调整为1，从而实现理论上的梯度最速下降，但是这样计算逆矩阵的代价太过expensive，因为矩阵的分解极其复杂，计算量过大，很容易就被放弃
 第三种办法即为Lyu & Simoncelli 的除法归一化操作：$$y_i = \frac{x_i}{\left(\sum_{j \in N(i)} w_j x_j^2 + \sigma^2\right)^{-0.5}}$$
