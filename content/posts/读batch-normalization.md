@@ -16,4 +16,3 @@ batch normalization 源于朴素的思想：在反向传播的过程中，诸如
 下面即为batch normalization的全流程
 
 ![image](https://raw.githubusercontent.com/lens365/lens_website/main/static/images/image-1778339982647-2f1hg3.png)
-
