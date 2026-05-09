@@ -16,3 +16,5 @@ batch normalization 源于朴素的思想：在反向传播的过程中，诸如
 下面即为batch normalization的全流程
 
 ![image](https://raw.githubusercontent.com/lens365/lens_website/main/static/images/image-1778339982647-2f1hg3.png)
+
+与此同时，我们也可以从本论文中很明显感受到batch size对于normalization的影响很大，因此受制于显存等等影响，小batch size很必要，因此本方法仍具有一定的缺陷
