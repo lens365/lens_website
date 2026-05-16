@@ -36,6 +36,9 @@ colorScheme = "auto"                      # 颜色主题：auto/light/dark
 hideColorSchemeToggle = false
 customCSS = ["css/custom.css"]
 
+# ===== Vercel Speed Insights =====
+vercelAnalytics = true
+
 # ===== 社交链接 =====
 [[params.social]]
 name = "Github"
